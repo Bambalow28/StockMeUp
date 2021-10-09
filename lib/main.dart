@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newrandomproject/mainPages/home.dart';
+import 'package:newrandomproject/mainPages/verifiedHome.dart';
 
 void main() {
   runApp(MyApp());
@@ -38,6 +39,29 @@ class _LoginPageState extends State<LoginPage> {
         context,
         MaterialPageRoute(builder: (context) => MainPage()),
         ModalRoute.withName("/LoginPage"));
+  }
+
+  goToVerifiedHome() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => VerifiedHome()),
+        ModalRoute.withName("/LoginPage"));
+  }
+
+  loginCheck() {
+    if (emailAddress.text == "admin" && password.text == "admin123") {
+      goToVerifiedHome();
+    } else if (emailAddress.text == "user" && password.text == "user123") {
+      goToHomePage();
+    } else {
+      print("Error! No Account Found!");
+      loginCheck();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -123,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      goToHomePage();
+                      loginCheck();
                     },
                     child: Container(
                       width: 300.0,
