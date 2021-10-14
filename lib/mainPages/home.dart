@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:newrandomproject/routes.dart';
 
 //View News Page Widget
@@ -10,6 +11,7 @@ class MainPage extends StatefulWidget {
 //View News Widget State
 class _MainPage extends State<MainPage> {
   String appBarTitle = "Home";
+  String marketStatus = '';
   int pageIndex = 0;
 
   //Responsible for the Bottom Navigation Bar
@@ -33,6 +35,25 @@ class _MainPage extends State<MainPage> {
           break;
       }
     });
+  }
+
+  //Check if Time is Between Market Hours
+  marketHours() {
+    DateFormat dateFormat = new DateFormat.Hm();
+
+    DateTime marketOpen = dateFormat.parse("9:30");
+    DateTime marketClose = dateFormat.parse("16:00");
+
+    DateTime now = DateTime.now();
+    now = DateTime.parse(now.toString());
+
+    if (now.isAfter(marketOpen) && now.isBefore(marketClose)) {
+      print("Market is Open");
+      marketStatus = "Market Open";
+    } else {
+      print("Market is Closed");
+      marketStatus = "Market Closed";
+    }
   }
 
   @override
@@ -90,18 +111,121 @@ class _MainPage extends State<MainPage> {
         ),
         body: GestureDetector(
             onTap: () => {FocusScope.of(context).requestFocus(new FocusNode())},
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color.fromRGBO(23, 23, 23, 1),
-                    Color.fromRGBO(13, 13, 13, 1)
-                  ],
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 10.0),
+                  alignment: Alignment.center,
+                  child: Text(
+                    marketStatus,
+                    style: TextStyle(
+                        color: Colors.green[400],
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: Container(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () => {marketHours()},
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    top: 20.0, left: 10.0, right: 10.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey[900],
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Color.fromRGBO(0, 0, 0, 1)
+                                            .withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 4),
+                                  ],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20.0),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width - 30,
+                                height: 85.0,
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: 80.0,
+                                      height: 55.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey,
+                                        // image: new DecorationImage(
+                                        //   fit: BoxFit.contain,
+                                        //   image: new NetworkImage(
+                                        //     profilePic,
+                                        //   ),
+                                        // ),
+                                      ),
+                                    ),
+                                    Column(
+                                      children: <Widget>[
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              top: 10.0, bottom: 5.0),
+                                          child: Text(
+                                            'Joshua Alanis',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  left: 10.0, right: 20.0),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Container(
+                                                    child: Text(
+                                                      'BUY',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5.0,
+                                                  ),
+                                                  Container(
+                                                    child: Text(
+                                                      'AMC',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             )));
   }
 }
