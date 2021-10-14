@@ -12,6 +12,7 @@ class MainPage extends StatefulWidget {
 class _MainPage extends State<MainPage> {
   String appBarTitle = "Home";
   String marketStatus = '';
+  bool marketStatusCheck = false;
   int pageIndex = 0;
 
   //Responsible for the Bottom Navigation Bar
@@ -50,10 +51,17 @@ class _MainPage extends State<MainPage> {
     if (now.isAfter(marketOpen) && now.isBefore(marketClose)) {
       print("Market is Open");
       marketStatus = "Market Open";
+      marketStatusCheck = true;
     } else {
       print("Market is Closed");
       marketStatus = "Market Closed";
+      marketStatusCheck = false;
     }
+  }
+
+  void initState() {
+    super.initState();
+    marketHours();
   }
 
   @override
@@ -119,7 +127,9 @@ class _MainPage extends State<MainPage> {
                   child: Text(
                     marketStatus,
                     style: TextStyle(
-                        color: Colors.green[400],
+                        color: marketStatusCheck
+                            ? Colors.green[400]
+                            : Colors.red[400],
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold),
                   ),
@@ -133,7 +143,7 @@ class _MainPage extends State<MainPage> {
                         return Column(
                           children: <Widget>[
                             GestureDetector(
-                              onTap: () => {marketHours()},
+                              onTap: () => {print('Clicked')},
                               child: Container(
                                 margin: EdgeInsets.only(
                                     top: 20.0, left: 10.0, right: 10.0),
