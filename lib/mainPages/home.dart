@@ -122,14 +122,19 @@ class _MainPage extends State<MainPage> {
             child: Column(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(top: 10.0),
+                  padding: EdgeInsets.all(5.0),
+                  margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
                   alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width - 100,
+                  decoration: BoxDecoration(
+                      color: marketStatusCheck
+                          ? Colors.green[400]
+                          : Colors.red[400],
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   child: Text(
                     marketStatus,
                     style: TextStyle(
-                        color: marketStatusCheck
-                            ? Colors.green[400]
-                            : Colors.red[400],
+                        color: Colors.white,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold),
                   ),
@@ -145,8 +150,8 @@ class _MainPage extends State<MainPage> {
                             GestureDetector(
                               onTap: () => {print('Clicked')},
                               child: Container(
-                                margin: EdgeInsets.only(
-                                    top: 20.0, left: 10.0, right: 10.0),
+                                margin:
+                                    EdgeInsets.only(left: 10.0, right: 10.0),
                                 decoration: BoxDecoration(
                                   color: Colors.blueGrey[900],
                                   boxShadow: [
@@ -161,7 +166,7 @@ class _MainPage extends State<MainPage> {
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width - 30,
-                                height: 85.0,
+                                height: 90.0,
                                 child: Row(
                                   children: <Widget>[
                                     Container(
@@ -185,45 +190,39 @@ class _MainPage extends State<MainPage> {
                                           padding: EdgeInsets.only(
                                               top: 10.0, bottom: 5.0),
                                           child: Text(
-                                            'Joshua Alanis',
+                                            'APPL',
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 20.0,
+                                                fontSize: 25.0,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Container(
-                                              padding: EdgeInsets.only(
-                                                  left: 10.0, right: 20.0),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Text(
-                                                      'BUY',
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Container(
-                                                    child: Text(
-                                                      'AMC',
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ],
+                                        Container(
+                                          padding: EdgeInsets.only(right: 20.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  'BUY' + ' @ ' + '140',
+                                                  style: TextStyle(
+                                                      fontSize: 20.0,
+                                                      color: Colors.white),
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ],
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          right: 5.0, bottom: 5.0),
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                        'Joshua Alanis' + ' | ' + '9:00AM',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12.0),
+                                      ),
                                     ),
                                   ],
                                 ),
