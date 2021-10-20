@@ -38,17 +38,47 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  //Show Market Status (When it opens)
+  showMarketStatus(BuildContext context) {
+    Widget okBtn = TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('Got it!'));
+
+    AlertDialog marketClosedAlert = AlertDialog(
+      title: Text('MARKET CLOSED'),
+      content: Text("Market Opens @ 9:30AM EST"),
+      actions: [okBtn],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return marketClosedAlert;
+        });
+  }
+
   //Check if Time is Between Market Hours
   marketHours() {
     DateFormat dateFormat = new DateFormat.Hm();
 
-    DateTime marketOpen = dateFormat.parse("9:30");
-    DateTime marketClose = dateFormat.parse("16:00");
-
     DateTime now = DateTime.now();
     now = DateTime.parse(now.toString());
 
-    if (now.isAfter(marketOpen) && now.isBefore(marketClose)) {
+    var marketOpen = dateFormat.parse("9:30");
+    var marketClose = dateFormat.parse("16:00");
+
+    var formattedMarketOpen = DateTime(
+        now.year, now.month, now.day, marketOpen.hour, marketOpen.minute);
+
+    var formattedMarketClosed = DateTime(
+        now.year, now.month, now.day, marketClose.hour, marketClose.minute);
+
+    var timeTillMarketOpen = now.difference(formattedMarketOpen);
+
+    if (now.isAfter(formattedMarketOpen) &&
+        now.isBefore(formattedMarketClosed)) {
       print("Market is Open");
       marketStatus = "Market Open";
       marketStatusCheck = true;
@@ -121,112 +151,135 @@ class _MainPage extends State<MainPage> {
             onTap: () => {FocusScope.of(context).requestFocus(new FocusNode())},
             child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(5.0),
-                  margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width - 100,
-                  decoration: BoxDecoration(
-                      color: marketStatusCheck
-                          ? Colors.green[400]
-                          : Colors.red[400],
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Text(
-                    marketStatus,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold),
+                GestureDetector(
+                  onTap: () {
+                    showMarketStatus(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(5.0),
+                    margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width - 100,
+                    decoration: BoxDecoration(
+                        color: marketStatusCheck
+                            ? Colors.green[400]
+                            : Colors.red[400],
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Text(
+                      marketStatus,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 Expanded(
                   child: Container(
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: 1,
+                      itemCount: 2,
                       itemBuilder: (BuildContext context, int index) {
                         return Column(
                           children: <Widget>[
                             GestureDetector(
                               onTap: () => {print('Clicked')},
                               child: Container(
-                                margin:
-                                    EdgeInsets.only(left: 10.0, right: 10.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.blueGrey[900],
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Color.fromRGBO(0, 0, 0, 1)
-                                            .withOpacity(0.5),
-                                        spreadRadius: 2,
-                                        blurRadius: 4),
-                                  ],
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20.0),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width - 30,
-                                height: 90.0,
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      alignment: Alignment.center,
-                                      width: 80.0,
-                                      height: 55.0,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.grey,
-                                        // image: new DecorationImage(
-                                        //   fit: BoxFit.contain,
-                                        //   image: new NetworkImage(
-                                        //     profilePic,
-                                        //   ),
-                                        // ),
-                                      ),
+                                  margin: EdgeInsets.only(
+                                      top: 10.0, left: 10.0, right: 10.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueGrey[900],
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Color.fromRGBO(0, 0, 0, 1)
+                                              .withOpacity(0.5),
+                                          spreadRadius: 2,
+                                          blurRadius: 4),
+                                    ],
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20.0),
                                     ),
-                                    Column(
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              top: 10.0, bottom: 5.0),
-                                          child: Text(
-                                            'APPL',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 25.0,
-                                                fontWeight: FontWeight.bold),
+                                  ),
+                                  width: MediaQuery.of(context).size.width - 30,
+                                  height: 90.0,
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(top: 15.0),
+                                            alignment: Alignment.center,
+                                            width: 80.0,
+                                            height: 55.0,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.grey,
+                                              // image: new DecorationImage(
+                                              //   fit: BoxFit.contain,
+                                              //   image: new NetworkImage(
+                                              //     profilePic,
+                                              //   ),
+                                              // ),
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.only(right: 20.0),
-                                          child: Row(
+                                          Column(
                                             children: <Widget>[
                                               Container(
+                                                padding: EdgeInsets.only(
+                                                    top: 10.0, bottom: 5.0),
                                                 child: Text(
-                                                  'BUY' + ' @ ' + '140',
+                                                  'APPL',
                                                   style: TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Colors.white),
+                                                      color: Colors.white,
+                                                      fontSize: 25.0,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                    right: 15.0),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: Text(
+                                                        'BUY' + ' @ ' + '140',
+                                                        style: TextStyle(
+                                                            fontSize: 20.0,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          right: 5.0, bottom: 5.0),
-                                      alignment: Alignment.bottomRight,
-                                      child: Text(
-                                        'Joshua Alanis' + ' | ' + '9:00AM',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 12.0),
+                                          Expanded(child: SizedBox()),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                top: 15.0, right: 20.0),
+                                            child: Icon(
+                                              Icons.trending_up_rounded,
+                                              color: Colors.green,
+                                              size: 55.0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                      // Container(
+                                      //   padding: EdgeInsets.only(
+                                      //       right: 20.0, bottom: 2.0),
+                                      //   alignment: Alignment.bottomLeft,
+                                      //   child: Text(
+                                      //     '9:00AM',
+                                      //     style: TextStyle(
+                                      //         color: Colors.grey,
+                                      //         fontSize: 10.0),
+                                      //   ),
+                                      // ),
+                                    ],
+                                  )),
                             ),
                           ],
                         );

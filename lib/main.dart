@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[850],
+        backgroundColor: Colors.grey[900],
         resizeToAvoidBottomInset: false,
         body: GestureDetector(
             onTap: () {
