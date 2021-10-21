@@ -102,6 +102,90 @@ class _StockPage extends State<StockPage> {
                   ],
                 ),
               ),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                      margin:
+                          EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+                      width: MediaQuery.of(context).size.width - 20,
+                      height: 130.0,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[850],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 10.0, top: 10.0),
+                            child: Text(
+                              'Trending',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10.0, right: 10.0),
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 4,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Column(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () => {print('Clicked')},
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              top: 10.0, left: 5.0, right: 5.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blueGrey[500],
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color:
+                                                      Color.fromRGBO(0, 0, 0, 1)
+                                                          .withOpacity(0.5),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 4),
+                                            ],
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0),
+                                            ),
+                                          ),
+                                          width: 130.0,
+                                          height: 60.0,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                    top: 5.0, left: 5.0),
+                                                child: Text(
+                                                  'APPL',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16.0,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                ],
+              ),
             )));
   }
 }

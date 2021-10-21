@@ -157,7 +157,7 @@ class _MainPage extends State<MainPage> {
                   },
                   child: Container(
                     padding: EdgeInsets.all(5.0),
-                    margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                    margin: EdgeInsets.only(top: 20.0, bottom: 10.0),
                     alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width - 100,
                     decoration: BoxDecoration(
@@ -223,10 +223,12 @@ class _MainPage extends State<MainPage> {
                                             ),
                                           ),
                                           Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: <Widget>[
                                               Container(
                                                 padding: EdgeInsets.only(
-                                                    top: 10.0, bottom: 5.0),
+                                                    top: 10.0, left: 5.0),
                                                 child: Text(
                                                   'APPL',
                                                   style: TextStyle(
@@ -237,20 +239,15 @@ class _MainPage extends State<MainPage> {
                                                 ),
                                               ),
                                               Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 15.0),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      child: Text(
-                                                        'BUY' + ' @ ' + '140',
-                                                        style: TextStyle(
-                                                            fontSize: 20.0,
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                padding:
+                                                    EdgeInsets.only(left: 5.0),
+                                                child: Container(
+                                                  child: Text(
+                                                    'BUY' + ' @ ' + '140',
+                                                    style: TextStyle(
+                                                        fontSize: 20.0,
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -267,17 +264,17 @@ class _MainPage extends State<MainPage> {
                                           ),
                                         ],
                                       ),
-                                      // Container(
-                                      //   padding: EdgeInsets.only(
-                                      //       right: 20.0, bottom: 2.0),
-                                      //   alignment: Alignment.bottomLeft,
-                                      //   child: Text(
-                                      //     '9:00AM',
-                                      //     style: TextStyle(
-                                      //         color: Colors.grey,
-                                      //         fontSize: 10.0),
-                                      //   ),
-                                      // ),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            right: 20.0, bottom: 2.0),
+                                        alignment: Alignment.bottomRight,
+                                        child: Text(
+                                          '9:00AM',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 10.0),
+                                        ),
+                                      ),
                                     ],
                                   )),
                             ),
