@@ -201,13 +201,16 @@ class _MainPage extends State<MainPage> {
                                     ),
                                   ),
                                   width: MediaQuery.of(context).size.width - 30,
-                                  height: 90.0,
+                                  height: 100.0,
                                   child: Column(
                                     children: <Widget>[
                                       Row(
                                         children: <Widget>[
                                           Container(
-                                            margin: EdgeInsets.only(top: 15.0),
+                                            margin: EdgeInsets.only(
+                                                top: 15.0,
+                                                left: 10.0,
+                                                bottom: 5.0),
                                             alignment: Alignment.center,
                                             width: 80.0,
                                             height: 55.0,
@@ -228,7 +231,7 @@ class _MainPage extends State<MainPage> {
                                             children: <Widget>[
                                               Container(
                                                 padding: EdgeInsets.only(
-                                                    top: 10.0, left: 5.0),
+                                                    top: 15.0, left: 5.0),
                                                 child: Text(
                                                   'APPL',
                                                   style: TextStyle(
@@ -266,13 +269,38 @@ class _MainPage extends State<MainPage> {
                                       ),
                                       Container(
                                         padding: EdgeInsets.only(
-                                            right: 20.0, bottom: 2.0),
+                                            left: 10.0,
+                                            right: 20.0,
+                                            bottom: 2.0),
                                         alignment: Alignment.bottomRight,
-                                        child: Text(
-                                          '9:00AM',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 10.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
+                                              '@Bambalow28',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 10.0),
+                                            ),
+                                            Icon(
+                                              Icons.check_circle,
+                                              size: 10.0,
+                                              color: Colors.blue,
+                                            ),
+                                            Expanded(
+                                              child: SizedBox(),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  left: 10.0, bottom: 2.0),
+                                              alignment: Alignment.bottomRight,
+                                              child: Text(
+                                                '10:00AM',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 10.0),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
