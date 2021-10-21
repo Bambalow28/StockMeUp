@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 import 'package:newrandomproject/routes.dart';
 
 //View News Page Widget
@@ -33,6 +35,20 @@ class _StockPage extends State<StockPage> {
           break;
       }
     });
+  }
+
+  //Yahoo Finance API Request
+  getTrendingStocks() async {
+    var yahooFinance = Uri.parse('https://yfapi.net/v1/finance/trending/US');
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
+    var res = await http.get(yahooFinance, headers: headers);
+
+    var jsonResponse = convert.jsonDecode(res.body);
+    print(jsonResponse);
   }
 
   @override
@@ -136,7 +152,7 @@ class _StockPage extends State<StockPage> {
                                   return Column(
                                     children: <Widget>[
                                       GestureDetector(
-                                        onTap: () => {print('Clicked')},
+                                        onTap: () => {getTrendingStocks()},
                                         child: Container(
                                           margin: EdgeInsets.only(
                                               top: 10.0, left: 5.0, right: 5.0),
@@ -184,6 +200,52 @@ class _StockPage extends State<StockPage> {
                           ),
                         ],
                       )),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+                    width: MediaQuery.of(context).size.width - 20,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 10.0, top: 10.0),
+                          child: Text(
+                            'Watchlist',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+                    width: MediaQuery.of(context).size.width - 20,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(left: 10.0, top: 10.0),
+                          child: Text(
+                            'News',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
                 ],
               ),
             )));
