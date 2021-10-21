@@ -47,8 +47,10 @@ class _MainPage extends State<MainPage> {
         child: Text('Got it!'));
 
     AlertDialog marketClosedAlert = AlertDialog(
-      title: Text('MARKET CLOSED'),
-      content: Text("Market Opens @ 9:30AM EST"),
+      title: marketStatusCheck ? Text('MARKET OPEN') : Text('MARKET CLOSED'),
+      content: marketStatusCheck
+          ? Text('Market is open until 4:00PM EST')
+          : Text('Market Opens @ 9:30AM EST'),
       actions: [okBtn],
     );
 
