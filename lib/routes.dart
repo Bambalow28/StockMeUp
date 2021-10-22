@@ -5,16 +5,18 @@ import 'package:newrandomproject/signupPage/signup.dart';
 import 'package:newrandomproject/mainPages/stocks.dart';
 import 'package:newrandomproject/mainPages/groupChats.dart';
 import 'package:newrandomproject/mainPages/profile.dart';
+import 'package:newrandomproject/mainPages/postSignal.dart';
 
-// //Transition to Home Page
-// Route loginRoute() {
-//   return PageRouteBuilder(
-//     pageBuilder: (context, animation, secondaryAnimation) => LoginPage(title: "Stock Me Up"),
-//     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-//       return child;
-//     },
-//   );
-// }
+//Transition to Login Page
+Route loginRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        LoginPage(title: "Stock Me Up"),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return child;
+    },
+  );
+}
 
 //Transition to Home Page
 Route homeRoute() {
@@ -50,6 +52,16 @@ Route groupChatRoute() {
 Route profileRoute() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return child;
+    },
+  );
+}
+
+//Transition To Post Signal Page
+Route postSignalRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => postSignal(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return child;
     },

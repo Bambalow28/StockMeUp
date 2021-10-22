@@ -26,9 +26,12 @@ class _VerifiedHome extends State<VerifiedHome> {
           Navigator.of(context).push(stocksRoute());
           break;
         case 2:
-          Navigator.of(context).push(groupChatRoute());
+          Navigator.of(context).push(postSignalRoute());
           break;
         case 3:
+          Navigator.of(context).push(groupChatRoute());
+          break;
+        case 4:
           Navigator.of(context).push(profileRoute());
           break;
       }

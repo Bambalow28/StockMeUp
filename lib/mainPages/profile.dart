@@ -34,6 +34,11 @@ class _ProfilePage extends State<ProfilePage> {
     });
   }
 
+  //Logout Clicked
+  logOutClicked() {
+    Navigator.of(context).push(loginRoute());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +56,7 @@ class _ProfilePage extends State<ProfilePage> {
             Padding(
               padding: EdgeInsets.only(right: 15.0),
               child: GestureDetector(
-                onTap: () => {print('Logout Clicked')},
+                onTap: () => {logOutClicked()},
                 child: Icon(
                   Icons.logout_rounded,
                   color: Colors.red[300],

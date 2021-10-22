@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 import 'package:newrandomproject/routes.dart';
 
 //View News Page Widget
@@ -14,6 +15,7 @@ class _MainPage extends State<MainPage> {
   String marketStatus = '';
   bool marketStatusCheck = false;
   int pageIndex = 0;
+  int timeMarketOpen = 0;
 
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
@@ -50,7 +52,7 @@ class _MainPage extends State<MainPage> {
       title: marketStatusCheck ? Text('MARKET OPEN') : Text('MARKET CLOSED'),
       content: marketStatusCheck
           ? Text('Market is open until 4:00PM EST')
-          : Text('Market Opens @ 9:30AM EST'),
+          : Text('Market Opens in ' + ' ' + '$timeMarketOpen'),
       actions: [okBtn],
     );
 
@@ -78,6 +80,10 @@ class _MainPage extends State<MainPage> {
         now.year, now.month, now.day, marketClose.hour, marketClose.minute);
 
     var timeTillMarketOpen = now.difference(formattedMarketOpen);
+    timeMarketOpen = timeTillMarketOpen.inSeconds;
+    int hour = timeMarketOpen ~/ 3600;
+    int minutes = ((timeMarketOpen - hour * 3600)) ~/ 60;
+    int seconds = timeMarketOpen - (hour * 3600) - (minutes * 60);
 
     if (now.isAfter(formattedMarketOpen) &&
         now.isBefore(formattedMarketClosed)) {
@@ -88,6 +94,8 @@ class _MainPage extends State<MainPage> {
       print("Market is Closed");
       marketStatus = "Market Closed";
       marketStatusCheck = false;
+      print('$hour:$minutes:$seconds');
+      print(hour.abs());
     }
   }
 
@@ -233,7 +241,7 @@ class _MainPage extends State<MainPage> {
                                             children: <Widget>[
                                               Container(
                                                 padding: EdgeInsets.only(
-                                                    top: 15.0, left: 5.0),
+                                                    top: 15.0, left: 15.0),
                                                 child: Text(
                                                   'APPL',
                                                   style: TextStyle(
@@ -245,7 +253,7 @@ class _MainPage extends State<MainPage> {
                                               ),
                                               Container(
                                                 padding:
-                                                    EdgeInsets.only(left: 5.0),
+                                                    EdgeInsets.only(left: 15.0),
                                                 child: Container(
                                                   child: Text(
                                                     'BUY' + ' @ ' + '140',
@@ -271,9 +279,7 @@ class _MainPage extends State<MainPage> {
                                       ),
                                       Container(
                                         padding: EdgeInsets.only(
-                                            left: 10.0,
-                                            right: 20.0,
-                                            bottom: 2.0),
+                                            left: 10.0, right: 20.0),
                                         alignment: Alignment.bottomRight,
                                         child: Row(
                                           children: <Widget>[
@@ -292,8 +298,8 @@ class _MainPage extends State<MainPage> {
                                               child: SizedBox(),
                                             ),
                                             Container(
-                                              padding: EdgeInsets.only(
-                                                  left: 10.0, bottom: 2.0),
+                                              padding:
+                                                  EdgeInsets.only(left: 10.0),
                                               alignment: Alignment.bottomRight,
                                               child: Text(
                                                 '10:00AM',

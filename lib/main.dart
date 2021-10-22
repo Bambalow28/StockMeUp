@@ -32,6 +32,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailAddress = new TextEditingController();
   TextEditingController password = new TextEditingController();
 
+  bool loginCheck = false;
+
   goToSignUpPage() {}
 
   goToHomePage() {
@@ -48,14 +50,15 @@ class _LoginPageState extends State<LoginPage> {
         ModalRoute.withName("/LoginPage"));
   }
 
-  loginCheck() {
+  loginVerify() {
     if (emailAddress.text == "admin" && password.text == "admin123") {
       goToVerifiedHome();
     } else if (emailAddress.text == "user" && password.text == "user123") {
       goToHomePage();
     } else {
       print("Error! No Account Found!");
-      loginCheck();
+      loginCheck = true;
+      loginVerify();
     }
   }
 
@@ -147,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      loginCheck();
+                      loginVerify();
                     },
                     child: Container(
                       width: 300.0,
@@ -155,11 +158,12 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.center,
                       margin: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                          color: Colors.green[300],
+                          color:
+                              loginCheck ? Colors.red[300] : Colors.green[300],
                           borderRadius:
                               BorderRadius.all(Radius.circular(20.0))),
                       child: Text(
-                        "Login",
+                        loginCheck ? "Login Failed" : "Login",
                         style: TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                     ),
