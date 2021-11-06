@@ -20,7 +20,7 @@ class _postSignal extends State<postSignal> {
   TextEditingController messageTime = new TextEditingController();
 
   //Create Firebase Instance
-  // final firestoreInstance = FirebaseFirestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +114,11 @@ class _postSignal extends State<postSignal> {
                                 height: 50.0,
                                 decoration: BoxDecoration(
                                     color: Colors.green[300],
+                                    border: Border.all(
+                                        color: buy
+                                            ? Colors.blue
+                                            : Colors.transparent,
+                                        width: 2.0),
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(10.0))),
                                 child: Align(
@@ -145,6 +150,11 @@ class _postSignal extends State<postSignal> {
                                 height: 50.0,
                                 decoration: BoxDecoration(
                                     color: Colors.orange[300],
+                                    border: Border.all(
+                                        color: addMore
+                                            ? Colors.blue
+                                            : Colors.transparent,
+                                        width: 2.0),
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(10.0))),
                                 child: Align(
@@ -176,6 +186,11 @@ class _postSignal extends State<postSignal> {
                                 height: 50.0,
                                 decoration: BoxDecoration(
                                     color: Colors.red[300],
+                                    border: Border.all(
+                                        color: sell
+                                            ? Colors.blue
+                                            : Colors.transparent,
+                                        width: 2.0),
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(10.0))),
                                 child: Align(
