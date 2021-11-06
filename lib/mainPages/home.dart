@@ -18,6 +18,9 @@ class _MainPage extends State<MainPage> {
   int pageIndex = 0;
   int timeMarketOpen = 0;
 
+  //Texts for each signals
+  var signalCount = [];
+
   final firestoreInstance = FirebaseFirestore.instance;
 
   //Responsible for the Bottom Navigation Bar
@@ -49,9 +52,9 @@ class _MainPage extends State<MainPage> {
         .collection("verifiedUsers")
         .doc("Bambalow28")
         .collection("signalPosts")
-        .doc();
+        .get();
 
-    print(check.get());
+    print(check.docs.map((doc) => {}));
   }
 
   //Show Market Status (When it opens)
@@ -199,139 +202,152 @@ class _MainPage extends State<MainPage> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 2,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Column(
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () => {print('Clicked')},
-                              child: Container(
-                                  margin: EdgeInsets.only(
-                                      top: 10.0, left: 10.0, right: 10.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blueGrey[900],
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Color.fromRGBO(0, 0, 0, 1)
-                                              .withOpacity(0.5),
-                                          spreadRadius: 2,
-                                          blurRadius: 4),
-                                    ],
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20.0),
-                                    ),
-                                  ),
-                                  width: MediaQuery.of(context).size.width - 30,
-                                  height: 100.0,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Row(
+                  child: StreamBuilder(
+                    stream: firestoreInstance
+                        .collection("verifiedUsers")
+                        .doc("Bambalow28")
+                        .collection("signalPosts")
+                        .snapshots(),
+                    builder:
+                        (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                      return Container(
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: streamSnapshot.data?.docs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Column(
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () => {print('Clicked')},
+                                  child: Container(
+                                      margin: EdgeInsets.only(
+                                          top: 10.0, left: 10.0, right: 10.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blueGrey[900],
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Color.fromRGBO(0, 0, 0, 1)
+                                                  .withOpacity(0.5),
+                                              spreadRadius: 2,
+                                              blurRadius: 4),
+                                        ],
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0),
+                                        ),
+                                      ),
+                                      width: MediaQuery.of(context).size.width -
+                                          30,
+                                      height: 100.0,
+                                      child: Column(
                                         children: <Widget>[
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                top: 15.0,
-                                                left: 10.0,
-                                                bottom: 5.0),
-                                            alignment: Alignment.center,
-                                            width: 80.0,
-                                            height: 55.0,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.grey,
-                                              // image: new DecorationImage(
-                                              //   fit: BoxFit.contain,
-                                              //   image: new NetworkImage(
-                                              //     profilePic,
-                                              //   ),
-                                              // ),
-                                            ),
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                          Row(
                                             children: <Widget>[
                                               Container(
-                                                padding: EdgeInsets.only(
-                                                    top: 15.0, left: 15.0),
-                                                child: Text(
-                                                  'APPL',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 25.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                margin: EdgeInsets.only(
+                                                    top: 15.0,
+                                                    left: 10.0,
+                                                    bottom: 5.0),
+                                                alignment: Alignment.center,
+                                                width: 80.0,
+                                                height: 55.0,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.grey,
+                                                  // image: new DecorationImage(
+                                                  //   fit: BoxFit.contain,
+                                                  //   image: new NetworkImage(
+                                                  //     profilePic,
+                                                  //   ),
+                                                  // ),
                                                 ),
                                               ),
-                                              Container(
-                                                padding:
-                                                    EdgeInsets.only(left: 15.0),
-                                                child: Container(
-                                                  child: Text(
-                                                    'BUY' + ' @ ' + '140',
-                                                    style: TextStyle(
-                                                        fontSize: 20.0,
-                                                        color: Colors.white),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        top: 15.0, left: 15.0),
+                                                    child: Text(
+                                                      'APPL',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 25.0,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
                                                   ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 15.0),
+                                                    child: Container(
+                                                      child: Text(
+                                                        'BUY' + ' @ ' + '140',
+                                                        style: TextStyle(
+                                                            fontSize: 20.0,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Expanded(child: SizedBox()),
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                    top: 15.0, right: 20.0),
+                                                child: Icon(
+                                                  Icons.trending_up_rounded,
+                                                  color: Colors.green,
+                                                  size: 55.0,
                                                 ),
                                               ),
                                             ],
                                           ),
-                                          Expanded(child: SizedBox()),
                                           Container(
                                             padding: EdgeInsets.only(
-                                                top: 15.0, right: 20.0),
-                                            child: Icon(
-                                              Icons.trending_up_rounded,
-                                              color: Colors.green,
-                                              size: 55.0,
+                                                left: 10.0, right: 20.0),
+                                            alignment: Alignment.bottomRight,
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  '@Bambalow28',
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 10.0),
+                                                ),
+                                                Icon(
+                                                  Icons.check_circle,
+                                                  size: 10.0,
+                                                  color: Colors.blue,
+                                                ),
+                                                Expanded(
+                                                  child: SizedBox(),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.only(
+                                                      left: 10.0),
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  child: Text(
+                                                    '10:00AM',
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 10.0),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.only(
-                                            left: 10.0, right: 20.0),
-                                        alignment: Alignment.bottomRight,
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              '@Bambalow28',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 10.0),
-                                            ),
-                                            Icon(
-                                              Icons.check_circle,
-                                              size: 10.0,
-                                              color: Colors.blue,
-                                            ),
-                                            Expanded(
-                                              child: SizedBox(),
-                                            ),
-                                            Container(
-                                              padding:
-                                                  EdgeInsets.only(left: 10.0),
-                                              alignment: Alignment.bottomRight,
-                                              child: Text(
-                                                '10:00AM',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 10.0),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                                      )),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],

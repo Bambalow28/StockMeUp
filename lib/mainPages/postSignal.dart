@@ -14,6 +14,7 @@ class _postSignal extends State<postSignal> {
   bool buy = false;
   bool addMore = false;
   bool sell = false;
+  String signal = '';
 
   TextEditingController tickerSymbol = new TextEditingController();
   TextEditingController signalPost = new TextEditingController();
@@ -102,6 +103,7 @@ class _postSignal extends State<postSignal> {
                               setState(() {
                                 if (buy != true) {
                                   buy = true;
+                                  signal = 'BUY';
                                 }
 
                                 addMore = false;
@@ -138,6 +140,7 @@ class _postSignal extends State<postSignal> {
                               setState(() {
                                 if (addMore != true) {
                                   addMore = true;
+                                  signal = 'ADD MORE';
                                 }
 
                                 buy = false;
@@ -174,6 +177,7 @@ class _postSignal extends State<postSignal> {
                               setState(() {
                                 if (sell != true) {
                                   sell = true;
+                                  signal = 'SELL';
                                 }
 
                                 buy = false;
@@ -224,23 +228,38 @@ class _postSignal extends State<postSignal> {
                         ),
                       ),
                     ),
-                    Container(
-                        margin: EdgeInsets.only(
-                            top: 15.0, right: 20.0, left: 20.0, bottom: 40.0),
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                            color: Colors.green[300],
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30.0))),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Send Signal',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        )),
+                    GestureDetector(
+                      onTap: () {
+                        firestoreInstance
+                            .collection("verifiedUsers")
+                            .doc("Bambalow28")
+                            .collection("signalPosts")
+                            .doc('post_02')
+                            .set({
+                          "tickerSymbol": tickerSymbol.text,
+                          "signalPost": signalPost.text,
+                          "signal": signal,
+                          "timePosted": '00:00 AM'
+                        });
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(
+                              top: 15.0, right: 20.0, left: 20.0, bottom: 40.0),
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                              color: Colors.green[400],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30.0))),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Send Signal',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )),
+                    ),
                   ],
                 ))));
   }
