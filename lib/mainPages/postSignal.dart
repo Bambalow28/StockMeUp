@@ -11,13 +11,12 @@ class postSignal extends StatefulWidget {
 //View News Widget State
 class _postSignal extends State<postSignal> {
   String appBarTitle = "Post Signal";
-  bool general = false;
-  bool release = false;
-  bool restock = false;
-  bool shockDrop = false;
+  bool buy = false;
+  bool addMore = false;
+  bool sell = false;
 
-  TextEditingController messageTitle = new TextEditingController();
-  TextEditingController messageDescription = new TextEditingController();
+  TextEditingController tickerSymbol = new TextEditingController();
+  TextEditingController signalPost = new TextEditingController();
   TextEditingController messageTime = new TextEditingController();
 
   //Create Firebase Instance
@@ -55,7 +54,7 @@ class _postSignal extends State<postSignal> {
                       width: 300.0,
                       child: TextField(
                         textCapitalization: TextCapitalization.words,
-                        controller: messageTitle,
+                        controller: tickerSymbol,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color.fromRGBO(45, 45, 45, 1),
@@ -78,7 +77,7 @@ class _postSignal extends State<postSignal> {
                       width: MediaQuery.of(context).size.width,
                       child: TextField(
                         textCapitalization: TextCapitalization.words,
-                        controller: messageDescription,
+                        controller: signalPost,
                         maxLines: 2,
                         decoration: InputDecoration(
                           filled: true,
@@ -101,10 +100,12 @@ class _postSignal extends State<postSignal> {
                           child: GestureDetector(
                             onTap: () => {
                               setState(() {
-                                general = false;
-                                release = true;
-                                restock = false;
-                                shockDrop = false;
+                                if (buy != true) {
+                                  buy = true;
+                                }
+
+                                addMore = false;
+                                sell = false;
                               })
                             },
                             child: Container(
@@ -130,10 +131,12 @@ class _postSignal extends State<postSignal> {
                           child: GestureDetector(
                             onTap: () => {
                               setState(() {
-                                general = false;
-                                release = false;
-                                restock = true;
-                                shockDrop = false;
+                                if (addMore != true) {
+                                  addMore = true;
+                                }
+
+                                buy = false;
+                                sell = false;
                               })
                             },
                             child: Container(
@@ -159,11 +162,13 @@ class _postSignal extends State<postSignal> {
                           child: GestureDetector(
                             onTap: () => {
                               setState(() {
-                                general = false;
-                                release = false;
-                                restock = false;
-                                shockDrop = true;
-                              })
+                                if (sell != true) {
+                                  sell = true;
+                                }
+
+                                buy = false;
+                                addMore = false;
+                              }),
                             },
                             child: Container(
                                 margin: EdgeInsets.only(

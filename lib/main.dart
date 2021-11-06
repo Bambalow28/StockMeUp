@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:newrandomproject/mainPages/home.dart';
 import 'package:newrandomproject/mainPages/verifiedHome.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,6 +36,18 @@ class _LoginPageState extends State<LoginPage> {
 
   bool loginCheck = false;
 
+  //Initiate FlutterFire (Firebase)
+  void initializeFire() async {
+    try {
+      await Firebase.initializeApp();
+      setState(() {
+        print('DB Initialized');
+      });
+    } catch (e) {
+      print('Error: ' + e.toString());
+    }
+  }
+
   goToSignUpPage() {}
 
   goToHomePage() {
@@ -60,6 +74,12 @@ class _LoginPageState extends State<LoginPage> {
       loginCheck = true;
       loginVerify();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeFire();
   }
 
   @override

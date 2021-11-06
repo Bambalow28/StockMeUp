@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:newrandomproject/routes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //View News Page Widget
 class MainPage extends StatefulWidget {
@@ -16,6 +17,8 @@ class _MainPage extends State<MainPage> {
   bool marketStatusCheck = false;
   int pageIndex = 0;
   int timeMarketOpen = 0;
+
+  final firestoreInstance = FirebaseFirestore.instance;
 
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
@@ -38,6 +41,17 @@ class _MainPage extends State<MainPage> {
           break;
       }
     });
+  }
+
+  //Get all data stored in Firestore in Firebase
+  getDataFromFirebase() async {
+    var check = await firestoreInstance
+        .collection("verifiedUsers")
+        .doc("Bambalow28")
+        .collection("signalPosts")
+        .doc();
+
+    print(check.get());
   }
 
   //Show Market Status (When it opens)
@@ -95,13 +109,13 @@ class _MainPage extends State<MainPage> {
       marketStatus = "Market Closed";
       marketStatusCheck = false;
       print('$hour:$minutes:$seconds');
-      print(hour.abs());
     }
   }
 
   void initState() {
     super.initState();
     marketHours();
+    getDataFromFirebase();
   }
 
   @override
