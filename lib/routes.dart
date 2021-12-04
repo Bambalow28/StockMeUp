@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:newrandomproject/main.dart';
 import 'package:newrandomproject/mainPages/home.dart';
 import 'package:newrandomproject/signupPage/signup.dart';
-import 'package:newrandomproject/mainPages/stocks.dart';
+import 'package:newrandomproject/stocksPage/stocks.dart';
 import 'package:newrandomproject/mainPages/groupChats.dart';
 import 'package:newrandomproject/mainPages/profile.dart';
 import 'package:newrandomproject/mainPages/postSignal.dart';
