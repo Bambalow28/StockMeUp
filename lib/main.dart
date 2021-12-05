@@ -36,22 +36,22 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController password = new TextEditingController();
 
   bool loginCheck = false;
+  bool hidePass = true;
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  late FirebaseAuth auth;
 
   //Initiate FlutterFire (Firebase)
   void initializeFire() async {
     try {
       await Firebase.initializeApp();
       setState(() {
+        auth = FirebaseAuth.instance;
         print('DB Initialized');
       });
     } catch (e) {
       print('Error: ' + e.toString());
     }
   }
-
-  goToSignUpPage() {}
 
   goToHomePage() {
     Navigator.pushAndRemoveUntil(
@@ -79,23 +79,31 @@ class _LoginPageState extends State<LoginPage> {
     // }
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: emailAddress.text, password: password.text);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailAddress.text, password: password.text);
       goToVerifiedHome();
+      print('Login Success');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        setState(() {
+          loginCheck = true;
+          print('No user found for that email.');
+        });
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        setState(() {
+          loginCheck = true;
+          print('Wrong password provided for that user.');
+        });
       }
     }
   }
 
   signUpVerify() async {
     try {
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+      await auth.createUserWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
+      print('Account Created!');
+      goToHomePage();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The Password provided is too weak');
@@ -177,12 +185,25 @@ class _LoginPageState extends State<LoginPage> {
                         top: 5.0, left: 10.0, right: 10.0, bottom: 10.0),
                     child: TextField(
                       controller: password,
-                      obscureText: true,
+                      obscureText: hidePass,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey[800],
                         prefixIcon:
                             Icon(Icons.lock_open_rounded, color: Colors.grey),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.remove_red_eye_rounded,
+                              color: Colors.grey),
+                          onPressed: () {
+                            setState(() {
+                              if (hidePass == true) {
+                                hidePass = false;
+                              } else {
+                                hidePass = true;
+                              }
+                            });
+                          },
+                        ),
                         hintText: 'Password',
                         hintStyle: TextStyle(color: Colors.grey),
                         enabledBorder: OutlineInputBorder(

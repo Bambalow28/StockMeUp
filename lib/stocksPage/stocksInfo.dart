@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:newrandomproject/routes.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 //View News Page Widget
 class StocksInfo extends StatefulWidget {
@@ -140,6 +141,12 @@ class _StocksInfo extends State<StocksInfo> {
                     ),
                   ),
                   const Expanded(child: SizedBox()),
+                  Container(
+                    child: Text(
+                      '- 50.6',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
                 ],
               ),
               Container(
@@ -151,7 +158,7 @@ class _StocksInfo extends State<StocksInfo> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
               ),
               Container(
-                margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+                margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                 child: Column(
                   children: <Widget>[
                     Padding(
@@ -220,7 +227,7 @@ class _StocksInfo extends State<StocksInfo> {
                       children: <Widget>[
                         Expanded(
                           child: Container(
-                            height: 80.0,
+                            height: 60.0,
                             decoration: BoxDecoration(
                                 color: Colors.grey[800],
                                 borderRadius:
@@ -230,7 +237,7 @@ class _StocksInfo extends State<StocksInfo> {
                         const SizedBox(width: 10.0),
                         Expanded(
                             child: Container(
-                          height: 80.0,
+                          height: 60.0,
                           width: 150.0,
                           decoration: BoxDecoration(
                               color: Colors.grey[800],
@@ -245,7 +252,7 @@ class _StocksInfo extends State<StocksInfo> {
                       children: <Widget>[
                         Expanded(
                           child: Container(
-                            height: 80.0,
+                            height: 60.0,
                             decoration: BoxDecoration(
                                 color: Colors.grey[800],
                                 borderRadius:
@@ -255,7 +262,7 @@ class _StocksInfo extends State<StocksInfo> {
                         const SizedBox(width: 10.0),
                         Expanded(
                             child: Container(
-                          height: 80.0,
+                          height: 60.0,
                           width: 150.0,
                           decoration: BoxDecoration(
                               color: Colors.grey[800],
@@ -263,6 +270,39 @@ class _StocksInfo extends State<StocksInfo> {
                                   BorderRadius.all(Radius.circular(10.0))),
                         ))
                       ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20.0),
+                      width: MediaQuery.of(context).size.width - 20,
+                      height: 300.0,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[900],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(top: 10.0, left: 10.0),
+                                  child: Text(
+                                    'Related News',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: SizedBox(),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
