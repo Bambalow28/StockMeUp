@@ -3,6 +3,7 @@ import 'package:newrandomproject/mainPages/home.dart';
 import 'package:newrandomproject/mainPages/verifiedHome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,6 +37,8 @@ class _LoginPageState extends State<LoginPage> {
 
   bool loginCheck = false;
 
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   //Initiate FlutterFire (Firebase)
   void initializeFire() async {
     try {
@@ -64,15 +67,43 @@ class _LoginPageState extends State<LoginPage> {
         ModalRoute.withName("/LoginPage"));
   }
 
-  loginVerify() {
-    if (emailAddress.text == "admin" && password.text == "admin123") {
+  loginVerify() async {
+    // if (emailAddress.text == "admin" && password.text == "admin123") {
+    //   goToVerifiedHome();
+    // } else if (emailAddress.text == "user" && password.text == "user123") {
+    //   goToHomePage();
+    // } else {
+    //   print("Error! No Account Found!");
+    //   loginCheck = true;
+    //   loginVerify();
+    // }
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: emailAddress.text, password: password.text);
       goToVerifiedHome();
-    } else if (emailAddress.text == "user" && password.text == "user123") {
-      goToHomePage();
-    } else {
-      print("Error! No Account Found!");
-      loginCheck = true;
-      loginVerify();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+  }
+
+  signUpVerify() async {
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+          email: emailAddress.text, password: password.text);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The Password provided is too weak');
+      } else if (e.code == 'email-already-in-use') {
+        print('The Account already exists.');
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -190,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print('Sign Up Clicked');
+                      signUpVerify();
                     },
                     child: Container(
                       width: 270.0,
