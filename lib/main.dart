@@ -40,6 +40,8 @@ class _LoginPageState extends State<LoginPage> {
 
   late FirebaseAuth auth;
 
+  String loginText = 'Login';
+
   //Initiate FlutterFire (Firebase)
   void initializeFire() async {
     try {
@@ -81,8 +83,10 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
-      goToVerifiedHome();
-      print('Login Success');
+      setState(() {
+        loginText = 'Login Success';
+        Future.delayed(Duration(seconds: 1), () => {goToVerifiedHome()});
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         setState(() {
@@ -235,7 +239,7 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius:
                               BorderRadius.all(Radius.circular(20.0))),
                       child: Text(
-                        loginCheck ? "Login Failed" : "Login",
+                        loginText,
                         style: TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                     ),
