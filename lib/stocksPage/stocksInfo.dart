@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:newrandomproject/routes.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -19,6 +20,9 @@ class _StocksInfo extends State<StocksInfo> {
   int pageIndex = 1;
 
   String fullStockName = '';
+  int marketCap = 0;
+  var formattedMarketCap = '';
+  String fiftyTwoWeekRange = '';
 
   List getStockPrice = [];
 
@@ -62,6 +66,11 @@ class _StocksInfo extends State<StocksInfo> {
       List stockInfo = [];
       stockInfo = jsonResp['quoteResponse']['result'];
       fullStockName = stockInfo[0]['displayName'];
+      fiftyTwoWeekRange = stockInfo[0]['fiftyTwoWeekRange'];
+      marketCap = stockInfo[0]['marketCap'];
+      formattedMarketCap =
+          NumberFormat.compactCurrency(decimalDigits: 1, symbol: '\$')
+              .format(marketCap);
     });
   }
 
@@ -257,6 +266,25 @@ class _StocksInfo extends State<StocksInfo> {
                                 color: Colors.grey[800],
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0))),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  '52 Week Range',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 14.0),
+                                ),
+                                SizedBox(height: 3.0),
+                                Text(
+                                  fiftyTwoWeekRange,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10.0),
@@ -268,6 +296,25 @@ class _StocksInfo extends State<StocksInfo> {
                               color: Colors.grey[800],
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.0))),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Market Cap',
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14.0),
+                              ),
+                              SizedBox(height: 3.0),
+                              Text(
+                                formattedMarketCap,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
                         ))
                       ],
                     ),

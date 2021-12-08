@@ -43,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
   String loginMessage = '';
 
   late FirebaseAuth auth;
+  late final FirebaseFirestore firestoreInstance;
 
   String loginText = 'Login';
 
@@ -52,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
       await Firebase.initializeApp();
       setState(() {
         auth = FirebaseAuth.instance;
+        firestoreInstance = FirebaseFirestore.instance;
         print('DB Initialized');
       });
     } catch (e) {
@@ -112,6 +114,9 @@ class _LoginPageState extends State<LoginPage> {
           email: emailAddress.text, password: password.text);
       setState(() {
         loginCheck = false;
+        firestoreInstance
+            .collection('users')
+            .add({'email': emailAddress.text, 'verified': false});
         loginMessage = 'Account Successfully Created';
         Future.delayed(const Duration(seconds: 1), () => {goToHomePage()});
       });
@@ -284,7 +289,7 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() {
                           signUpLoading = true;
                         });
-                        await Future.delayed(const Duration(seconds: 2));
+                        await Future.delayed(const Duration(seconds: 1));
                         setState(() {
                           signUpVerify();
                           signUpLoading = false;
