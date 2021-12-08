@@ -37,6 +37,10 @@ class _LoginPageState extends State<LoginPage> {
 
   bool loginCheck = false;
   bool hidePass = true;
+  bool isLoading = false;
+  bool signUpLoading = false;
+
+  String loginMessage = '';
 
   late FirebaseAuth auth;
 
@@ -91,12 +95,12 @@ class _LoginPageState extends State<LoginPage> {
       if (e.code == 'user-not-found') {
         setState(() {
           loginCheck = true;
-          print('No user found for that email.');
+          loginMessage = 'No User Found';
         });
       } else if (e.code == 'wrong-password') {
         setState(() {
           loginCheck = true;
-          print('Wrong password provided for that user.');
+          loginMessage = 'Wrong Password';
         });
       }
     }
@@ -106,13 +110,22 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await auth.createUserWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
-      print('Account Created!');
-      goToHomePage();
+      setState(() {
+        loginCheck = false;
+        loginMessage = 'Account Successfully Created';
+        Future.delayed(const Duration(seconds: 1), () => {goToHomePage()});
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The Password provided is too weak');
+        setState(() {
+          loginCheck = true;
+          loginMessage = 'Weak Password';
+        });
       } else if (e.code == 'email-already-in-use') {
-        print('The Account already exists.');
+        setState(() {
+          loginCheck = true;
+          loginMessage = 'Email Already In-Use';
+        });
       }
     } catch (e) {
       print(e);
@@ -216,8 +229,8 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: Colors.green, width: 1.0),
+                            borderSide:
+                                BorderSide(color: Colors.green, width: 1.0),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                       ),
@@ -225,45 +238,96 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      loginVerify();
+                    onTap: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await Future.delayed(const Duration(seconds: 2));
+                      setState(() {
+                        loginVerify();
+                        isLoading = false;
+                      });
                     },
-                    child: Container(
-                      width: 300.0,
-                      height: 45.0,
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          color:
-                              loginCheck ? Colors.red[300] : Colors.green[300],
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(20.0))),
-                      child: Text(
-                        loginText,
-                        style: TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                    ),
+                    child: isLoading
+                        ? Container(
+                            width: 50.0,
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                                color: Colors.green[300],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30.0))),
+                            child: SizedBox(
+                              height: 100.0,
+                              width: 100.0,
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                      color: Colors.white, strokeWidth: 2.0)),
+                            ))
+                        : Container(
+                            width: 300.0,
+                            height: 45.0,
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                color: Colors.green[300],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.0))),
+                            child: Text(
+                              loginText,
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 20.0),
+                            ),
+                          ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      signUpVerify();
-                    },
-                    child: Container(
-                      width: 270.0,
-                      height: 45.0,
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(30.0))),
+                      onTap: () async {
+                        setState(() {
+                          signUpLoading = true;
+                        });
+                        await Future.delayed(const Duration(seconds: 2));
+                        setState(() {
+                          signUpVerify();
+                          signUpLoading = false;
+                        });
+                      },
+                      child: signUpLoading
+                          ? Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                  color: Colors.green[300],
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30.0))),
+                              child: SizedBox(
+                                height: 100.0,
+                                width: 100.0,
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                        color: Colors.white, strokeWidth: 2.0)),
+                              ))
+                          : Container(
+                              width: 270.0,
+                              height: 45.0,
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30.0))),
+                              child: Text(
+                                "Sign Up",
+                                style: TextStyle(
+                                    color: Colors.green[400], fontSize: 20.0),
+                              ),
+                            )),
+                  Padding(
+                      padding: EdgeInsets.only(top: 20.0),
                       child: Text(
-                        "Sign Up",
-                        style:
-                            TextStyle(color: Colors.green[400], fontSize: 20.0),
-                      ),
-                    ),
-                  ),
+                        loginMessage,
+                        style: TextStyle(
+                            color: loginCheck ? Colors.red : Colors.green,
+                            fontSize: 12.0),
+                      )),
                   Expanded(
                     child: SizedBox(),
                   ),
