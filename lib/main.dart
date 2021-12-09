@@ -46,6 +46,8 @@ class _LoginPageState extends State<LoginPage> {
   late final FirebaseFirestore firestoreInstance;
 
   String loginText = 'Login';
+  late User user;
+  late var uid;
 
   //Initiate FlutterFire (Firebase)
   void initializeFire() async {
@@ -90,7 +92,8 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
       setState(() {
-        loginText = 'Login Success';
+        loginMessage = 'Login Success';
+        loginCheck = false;
         Future.delayed(Duration(seconds: 1), () => {goToVerifiedHome()});
       });
     } on FirebaseAuthException catch (e) {
@@ -112,11 +115,14 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await auth.createUserWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
+      final User user = auth.currentUser!;
+      final userId = user.uid;
       setState(() {
         loginCheck = false;
         firestoreInstance
             .collection('users')
-            .add({'email': emailAddress.text, 'verified': false});
+            .doc(userId)
+            .set({'email': emailAddress.text, 'verified': false});
         loginMessage = 'Account Successfully Created';
         Future.delayed(const Duration(seconds: 1), () => {goToHomePage()});
       });
@@ -247,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         isLoading = true;
                       });
-                      await Future.delayed(const Duration(seconds: 2));
+                      await Future.delayed(const Duration(seconds: 1));
                       setState(() {
                         loginVerify();
                         isLoading = false;
