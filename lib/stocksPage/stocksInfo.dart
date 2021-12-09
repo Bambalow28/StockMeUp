@@ -37,7 +37,6 @@ class _StocksInfo extends State<StocksInfo> {
           Navigator.of(context).push(homeRoute());
           break;
         case 1:
-          appBarTitle = 'Stocks';
           break;
         case 2:
           Navigator.of(context).push(groupChatRoute());
@@ -88,7 +87,7 @@ class _StocksInfo extends State<StocksInfo> {
         appBar: AppBar(
           title: Text(appBarTitle),
           backgroundColor: const Color.fromRGBO(38, 38, 38, 1.0),
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 15.0),
@@ -150,12 +149,6 @@ class _StocksInfo extends State<StocksInfo> {
                     ),
                   ),
                   const Expanded(child: SizedBox()),
-                  Container(
-                    child: Text(
-                      '- 50.6',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
                 ],
               ),
               Container(
