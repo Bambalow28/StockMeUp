@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:newrandomproject/routes.dart';
 import 'package:newrandomproject/stocksPage/stocksInfo.dart';
+import 'package:newrandomproject/stocksPage/newsInfo.dart';
 
 //View News Page Widget
 class StockPage extends StatefulWidget {
@@ -24,7 +26,12 @@ class _StockPage extends State<StockPage> {
   late User user;
   late var userId;
 
-  int newsCount = 0;
+  List newsArticles = [];
+
+  DateTime now = DateTime.now();
+  DateFormat formatter = DateFormat.yMd().add_jm();
+  late String formatDate;
+  String formattedDate = '';
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -52,11 +59,11 @@ class _StockPage extends State<StockPage> {
     });
   }
 
+  //Get Logged In User Info
   Future getUserInfo() async {
     setState(() {
       user = auth.currentUser!;
       userId = user.uid;
-      print(userId);
     });
   }
 
@@ -121,7 +128,7 @@ class _StockPage extends State<StockPage> {
 
     var jsonResp = convert.jsonDecode(resp.body);
     setState(() {
-      newsCount = jsonResp['totalResults'];
+      newsArticles = jsonResp['articles'];
     });
   }
 
@@ -354,7 +361,7 @@ class _StockPage extends State<StockPage> {
                                   padding:
                                       EdgeInsets.only(right: 10.0, top: 5.0),
                                   child: IconButton(
-                                    icon: Icon(Icons.add_circle_rounded,
+                                    icon: Icon(Icons.add_circle_outline_rounded,
                                         color: Colors.blue[300]),
                                     onPressed: () {
                                       showModalBottomSheet(
@@ -403,6 +410,7 @@ class _StockPage extends State<StockPage> {
                                                           decoration:
                                                               InputDecoration(
                                                             filled: true,
+                                                            isDense: true,
                                                             fillColor: Colors
                                                                 .grey[800],
                                                             hintText:
@@ -462,13 +470,73 @@ class _StockPage extends State<StockPage> {
                                                                 .size
                                                                 .width -
                                                             20,
-                                                    height: 200.0,
+                                                    height: 230.0,
                                                     decoration: BoxDecoration(
                                                         color: Colors.grey[800],
                                                         borderRadius:
                                                             BorderRadius.all(
                                                                 Radius.circular(
                                                                     20.0))),
+                                                    child: Column(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 10.0,
+                                                                  left: 20.0,
+                                                                  right: 20.0,
+                                                                  bottom: 10.0),
+                                                          width: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width,
+                                                          child: TextField(
+                                                            controller:
+                                                                watchlistName,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              isDense: true,
+                                                              filled: true,
+                                                              fillColor: Colors
+                                                                  .grey[800],
+                                                              hintText:
+                                                                  'Search',
+                                                              suffixIcon: Icon(
+                                                                Icons.search,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .grey),
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      width:
+                                                                          1.0),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              10.0))),
+                                                              focusedBorder: OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      width:
+                                                                          1.0),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              10.0))),
+                                                            ),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                   Expanded(
                                                     child: SizedBox(),
@@ -539,112 +607,138 @@ class _StockPage extends State<StockPage> {
                         ),
                       ),
                       Expanded(
-                          child: Container(
-                        margin:
-                            EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
-                        width: MediaQuery.of(context).size.width - 20,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[850],
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(left: 15.0, top: 10.0),
-                              child: Text(
-                                'News',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25.0,
-                                    fontWeight: FontWeight.bold),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 20.0, left: 10.0, right: 10.0, bottom: 20.0),
+                          width: MediaQuery.of(context).size.width - 20,
+                          decoration: BoxDecoration(
+                              color: Colors.grey[850],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(left: 15.0, top: 10.0),
+                                child: Text(
+                                  'News',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  top: 20.0, left: 10.0, right: 10.0),
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: newsCount,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Column(
-                                    children: <Widget>[
-                                      GestureDetector(
-                                        onTap: () => {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      StocksInfo(
-                                                          stockName:
-                                                              getStockNames[
-                                                                  index])))
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              top: 10.0, left: 5.0, right: 5.0),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[800],
-                                            border: Border.all(
-                                                color: Colors.grey, width: 1.0),
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0),
-                                            ),
-                                          ),
-                                          width: 130.0,
-                                          height: 60.0,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    top: 5.0, left: 10.0),
-                                                child: Text(
-                                                  getStockNames[index],
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              Row(
+                              SizedBox(height: 10.0),
+                              Expanded(
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: newsArticles.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        formatDate =
+                                            newsArticles[index]['publishedAt'];
+                                        var parsedDate =
+                                            DateTime.parse(formatDate);
+
+                                        formattedDate =
+                                            formatter.format(parsedDate);
+
+                                        // print(formattedDate);
+                                        return GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NewsInfo(
+                                                            newsUrl:
+                                                                newsArticles[
+                                                                        index]
+                                                                    ['url'],
+                                                          )));
+                                            },
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 5.0,
+                                                  left: 15.0,
+                                                  right: 15.0,
+                                                  bottom: 5.0),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 100.0,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey[800],
+                                                  border: Border.all(
+                                                      color: Colors.grey,
+                                                      width: 1.0),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              10.0))),
+                                              child: Column(
                                                 children: <Widget>[
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        top: 5.0, left: 10.0),
-                                                    child: Text(
-                                                      '35.90',
-                                                      style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12.0,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  Container(
+                                                  Padding(
                                                       padding: EdgeInsets.only(
-                                                          top: 5.0, left: 5.0),
-                                                      child: Icon(
-                                                          Icons
-                                                              .trending_down_rounded,
-                                                          color:
-                                                              Colors.red[400])),
+                                                          top: 10.0,
+                                                          left: 10.0,
+                                                          right: 10.0),
+                                                      child: Text(
+                                                        newsArticles[index]
+                                                            ['title'],
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 14.0,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10.0,
+                                                                  bottom: 5.0),
+                                                          child: Text(
+                                                            newsArticles[index]
+                                                                    ['source']
+                                                                ['name'],
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: 12.0,
+                                                            ),
+                                                          )),
+                                                      Expanded(
+                                                        child: SizedBox(),
+                                                      ),
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: 10.0,
+                                                                  bottom: 5.0),
+                                                          child: Text(
+                                                            formattedDate,
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: 12.0,
+                                                            ),
+                                                          ))
+                                                    ],
+                                                  )
                                                 ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
+                                              ),
+                                            ));
+                                      }))
+                            ],
+                          ),
                         ),
-                      )),
+                      )
                     ],
                   ),
                 ))));
