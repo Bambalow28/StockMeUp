@@ -412,7 +412,7 @@ class _StockPage extends State<StockPage> {
                                                             filled: true,
                                                             isDense: true,
                                                             fillColor: Colors
-                                                                .grey[800],
+                                                                .grey[850],
                                                             hintText:
                                                                 'Enter Watchlist Name',
                                                             hintStyle: TextStyle(
@@ -472,7 +472,7 @@ class _StockPage extends State<StockPage> {
                                                             20,
                                                     height: 230.0,
                                                     decoration: BoxDecoration(
-                                                        color: Colors.grey[800],
+                                                        color: Colors.grey[850],
                                                         borderRadius:
                                                             BorderRadius.all(
                                                                 Radius.circular(
@@ -482,7 +482,7 @@ class _StockPage extends State<StockPage> {
                                                         Container(
                                                           margin:
                                                               EdgeInsets.only(
-                                                                  top: 10.0,
+                                                                  top: 20.0,
                                                                   left: 20.0,
                                                                   right: 20.0,
                                                                   bottom: 10.0),
@@ -498,7 +498,7 @@ class _StockPage extends State<StockPage> {
                                                               isDense: true,
                                                               filled: true,
                                                               fillColor: Colors
-                                                                  .grey[800],
+                                                                  .grey[850],
                                                               hintText:
                                                                   'Search',
                                                               suffixIcon: Icon(
@@ -602,6 +602,69 @@ class _StockPage extends State<StockPage> {
                                   ),
                                 ),
                               ],
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                  itemCount: 2,
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                        margin: EdgeInsets.only(
+                                            left: 10.0, right: 10.0),
+                                        child: Theme(
+                                          data: Theme.of(context).copyWith(
+                                              unselectedWidgetColor:
+                                                  Colors.white),
+                                          child: Card(
+                                            color: Colors.grey[800],
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: Colors.grey, width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: ExpansionTile(
+                                              iconColor: Colors.white,
+                                              title: Text('Long Term',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                              children: <Widget>[
+                                                Column(
+                                                  children: <Widget>[
+                                                    Container(
+                                                        margin: EdgeInsets.only(
+                                                            left: 10.0,
+                                                            right: 10.0),
+                                                        child: Expanded(
+                                                          child:
+                                                              ListView.builder(
+                                                                  itemCount: 2,
+                                                                  scrollDirection:
+                                                                      Axis
+                                                                          .vertical,
+                                                                  itemBuilder:
+                                                                      (BuildContext
+                                                                              context,
+                                                                          int index) {
+                                                                    return Container(
+                                                                      child:
+                                                                          Text(
+                                                                        'APPL',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
+                                                                    );
+                                                                  }),
+                                                        ))
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ));
+                                  }),
                             )
                           ],
                         ),
@@ -668,7 +731,8 @@ class _StockPage extends State<StockPage> {
                                                   .width,
                                               height: 100.0,
                                               decoration: BoxDecoration(
-                                                  color: Colors.grey[800],
+                                                  color: Colors.grey[300]!
+                                                      .withOpacity(0.1),
                                                   border: Border.all(
                                                       color: Colors.grey,
                                                       width: 1.0),
