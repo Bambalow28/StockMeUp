@@ -105,13 +105,16 @@ class _MainPage extends State<MainPage> {
     if (now.isAfter(formattedMarketOpen) &&
         now.isBefore(formattedMarketClosed)) {
       print("Market is Open");
-      marketStatus = "Market Open";
-      marketStatusCheck = true;
+      setState(() {
+        marketStatus = "Market Open";
+        marketStatusCheck = true;
+      });
     } else {
       print("Market is Closed");
-      marketStatus = "Market Closed";
-      marketStatusCheck = false;
-      print('$hour:$minutes:$seconds');
+      setState(() {
+        marketStatus = "Market Closed";
+        marketStatusCheck = false;
+      });
     }
   }
 
