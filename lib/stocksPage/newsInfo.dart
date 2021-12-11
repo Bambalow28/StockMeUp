@@ -15,6 +15,8 @@ class _NewsInfo extends State<NewsInfo> {
   String appBarTitle = "News Info";
   int pageIndex = 2;
 
+  late WebViewController _webViewController;
+
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
   void navigationBarTapped(int index) {
@@ -47,6 +49,26 @@ class _NewsInfo extends State<NewsInfo> {
           title: Text(appBarTitle),
           backgroundColor: const Color.fromRGBO(38, 38, 38, 1.0),
           automaticallyImplyLeading: true,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 5.0),
+              child: IconButton(
+                icon: Icon(Icons.refresh_rounded, color: Colors.white),
+                onPressed: () {
+                  _webViewController.reload();
+                },
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: 5.0),
+              child: IconButton(
+                icon: Icon(Icons.bookmark_border_rounded, color: Colors.white),
+                onPressed: () {
+                  print('Save Article');
+                },
+              ),
+            )
+          ],
         ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color.fromRGBO(24, 24, 24, 1.0),
@@ -97,6 +119,11 @@ class _NewsInfo extends State<NewsInfo> {
                   ),
                 ),
                 child: WebView(
+                  onWebViewCreated: (controller) {
+                    setState(() {
+                      _webViewController = controller;
+                    });
+                  },
                   initialUrl: widget.newsUrl,
                   javascriptMode: JavascriptMode.unrestricted,
                 ))));
