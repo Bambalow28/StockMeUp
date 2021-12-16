@@ -149,6 +149,12 @@ class _StockPage extends State<StockPage> {
           title: Text(appBarTitle),
           backgroundColor: const Color.fromRGBO(38, 38, 38, 1.0),
           automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.bar_chart_rounded),
+            onPressed: () {
+              print('Check Stocks');
+            },
+          ),
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 15.0),
@@ -717,10 +723,9 @@ class _StockPage extends State<StockPage> {
                                       },
                                       child: Container(
                                         margin: EdgeInsets.only(
-                                            top: 5.0,
                                             left: 15.0,
                                             right: 15.0,
-                                            bottom: 5.0),
+                                            bottom: 10.0),
                                         width:
                                             MediaQuery.of(context).size.width,
                                         height: 110.0,

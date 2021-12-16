@@ -26,12 +26,9 @@ class _VerifiedHome extends State<VerifiedHome> {
           Navigator.of(context).push(stocksRoute());
           break;
         case 2:
-          Navigator.of(context).push(postSignalRoute());
-          break;
-        case 3:
           Navigator.of(context).push(groupChatRoute());
           break;
-        case 4:
+        case 3:
           Navigator.of(context).push(profileRoute());
           break;
       }
@@ -79,12 +76,6 @@ class _VerifiedHome extends State<VerifiedHome> {
                 label: ('')),
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-                label: ('')),
-            BottomNavigationBarItem(
-                icon: Icon(
                   Icons.chat,
                   color: Colors.white,
                 ),
@@ -111,6 +102,14 @@ class _VerifiedHome extends State<VerifiedHome> {
                   ],
                 ),
               ),
-            )));
+            )),
+        floatingActionButton: FloatingActionButton(
+          elevation: 5.0,
+          child: Icon(Icons.create_rounded),
+          backgroundColor: Colors.green[300],
+          onPressed: () {
+            Navigator.of(context).push(postSignalRoute());
+          },
+        ));
   }
 }
