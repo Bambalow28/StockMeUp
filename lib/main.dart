@@ -78,22 +78,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   loginVerify() async {
-    // if (emailAddress.text == "admin" && password.text == "admin123") {
-    //   goToVerifiedHome();
-    // } else if (emailAddress.text == "user" && password.text == "user123") {
-    //   goToHomePage();
-    // } else {
-    //   print("Error! No Account Found!");
-    //   loginCheck = true;
-    //   loginVerify();
-    // }
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
       setState(() {
         loginMessage = 'Login Success';
         loginCheck = false;
+        final User user = auth.currentUser!;
+        final userId = user.uid;
+        firestoreInstance
+            .collection('users')
+            .doc(userId)
+            .get()
+            .then((value) => print(value.data()!['verified']));
         Future.delayed(Duration(seconds: 1), () => {goToVerifiedHome()});
       });
     } on FirebaseAuthException catch (e) {
