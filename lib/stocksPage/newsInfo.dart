@@ -28,10 +28,10 @@ class _NewsInfo extends State<NewsInfo> {
           Navigator.of(context).push(homeRoute());
           break;
         case 1:
-          Navigator.of(context).push(stocksRoute());
+          appBarTitle = ('News Info');
           break;
         case 2:
-          appBarTitle = 'News Info';
+          Navigator.of(context).push(groupChatRoute());
           break;
         case 3:
           Navigator.of(context).push(profileRoute());
@@ -87,13 +87,13 @@ class _NewsInfo extends State<NewsInfo> {
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.bar_chart_rounded,
-                  color: Colors.white,
+                  color: Colors.green[300],
                 ),
                 label: ('')),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.chat,
-                  color: Colors.green[300],
+                  color: Colors.white,
                 ),
                 label: ('')),
             BottomNavigationBarItem(

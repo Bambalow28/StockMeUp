@@ -198,7 +198,6 @@ class _StockPage extends State<StockPage> {
                 onTap: () =>
                     {FocusScope.of(context).requestFocus(new FocusNode())},
                 child: Container(
-                  height: MediaQuery.of(context).size.height,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -669,140 +668,124 @@ class _StockPage extends State<StockPage> {
                           ],
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: 20.0, left: 10.0, right: 10.0, bottom: 20.0),
-                          width: MediaQuery.of(context).size.width - 20,
-                          decoration: BoxDecoration(
-                              color: Colors.grey[850],
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.only(left: 15.0, top: 10.0),
-                                child: Text(
-                                  'News',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: 20.0, left: 10.0, right: 10.0, bottom: 20.0),
+                        width: MediaQuery.of(context).size.width - 20,
+                        // height: 100.0,
+                        decoration: BoxDecoration(
+                            color: Colors.grey[850],
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0))),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 15.0, top: 10.0),
+                              child: Text(
+                                'News',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 10.0),
-                              Expanded(
-                                  child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: newsArticles.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        formatDate =
-                                            newsArticles[index]['publishedAt'];
-                                        var parsedDate =
-                                            DateTime.parse(formatDate);
+                            ),
+                            SizedBox(height: 10.0),
+                            ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: newsArticles.length,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (BuildContext context, int index) {
+                                  formatDate =
+                                      newsArticles[index]['publishedAt'];
+                                  var parsedDate = DateTime.parse(formatDate);
 
-                                        formattedDate =
-                                            formatter.format(parsedDate);
+                                  formattedDate = formatter.format(parsedDate);
 
-                                        // print(formattedDate);
-                                        return GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          NewsInfo(
-                                                            newsUrl:
-                                                                newsArticles[
-                                                                        index]
-                                                                    ['url'],
-                                                          )));
-                                            },
-                                            child: Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 5.0,
-                                                  left: 15.0,
-                                                  right: 15.0,
-                                                  bottom: 5.0),
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              height: 100.0,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.grey[300]!
-                                                      .withOpacity(0.1),
-                                                  border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 1.0),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10.0))),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 10.0,
-                                                          left: 10.0,
-                                                          right: 10.0),
-                                                      child: Text(
-                                                        newsArticles[index]
-                                                            ['title'],
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 14.0,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      )),
-                                                  Expanded(
-                                                    child: SizedBox(),
-                                                  ),
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 10.0,
-                                                                  bottom: 5.0),
-                                                          child: Text(
-                                                            newsArticles[index]
-                                                                    ['source']
-                                                                ['name'],
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.grey,
-                                                              fontSize: 12.0,
-                                                            ),
-                                                          )),
-                                                      Expanded(
-                                                        child: SizedBox(),
+                                  // print(formattedDate);
+                                  return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => NewsInfo(
+                                                      newsUrl:
+                                                          newsArticles[index]
+                                                              ['url'],
+                                                    )));
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            top: 5.0,
+                                            left: 15.0,
+                                            right: 15.0,
+                                            bottom: 5.0),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 110.0,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[300]!
+                                                .withOpacity(0.1),
+                                            border: Border.all(
+                                                color: Colors.grey, width: 1.0),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0))),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 10.0,
+                                                    left: 10.0,
+                                                    right: 10.0),
+                                                child: Text(
+                                                  newsArticles[index]['title'],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14.0,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                            Expanded(
+                                              child: SizedBox(),
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10.0,
+                                                        bottom: 5.0),
+                                                    child: Text(
+                                                      newsArticles[index]
+                                                          ['source']['name'],
+                                                      style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 12.0,
                                                       ),
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  right: 10.0,
-                                                                  bottom: 5.0),
-                                                          child: Text(
-                                                            formattedDate,
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.grey,
-                                                              fontSize: 12.0,
-                                                            ),
-                                                          ))
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ));
-                                      }))
-                            ],
-                          ),
+                                                    )),
+                                                Expanded(
+                                                  child: SizedBox(),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 10.0,
+                                                        bottom: 5.0),
+                                                    child: Text(
+                                                      formattedDate,
+                                                      style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 12.0,
+                                                      ),
+                                                    ))
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ));
+                                })
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ))));
