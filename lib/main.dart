@@ -86,12 +86,19 @@ class _LoginPageState extends State<LoginPage> {
         loginCheck = false;
         final User user = auth.currentUser!;
         final userId = user.uid;
+        bool userCheck = false;
         firestoreInstance
             .collection('users')
             .doc(userId)
             .get()
-            .then((value) => print(value.data()!['verified']));
-        Future.delayed(Duration(seconds: 1), () => {goToVerifiedHome()});
+            .then((value) => userCheck = value.data()!['verified']);
+        if (userCheck == true) {
+          print('Redirecting To Verified Home...');
+          Future.delayed(Duration(seconds: 1), () => {goToVerifiedHome()});
+        } else {
+          print('Redirecting To Home...');
+          Future.delayed(Duration(seconds: 1), () => {goToHomePage()});
+        }
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

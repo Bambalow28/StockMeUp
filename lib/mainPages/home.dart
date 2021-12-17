@@ -53,8 +53,6 @@ class _MainPage extends State<MainPage> {
         .doc("Bambalow28")
         .collection("signalPosts")
         .get();
-
-    print(check.docs.map((doc) => {}));
   }
 
   //Show Market Status (When it opens)
