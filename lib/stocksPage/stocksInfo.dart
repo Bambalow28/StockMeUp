@@ -138,16 +138,18 @@ class _StocksInfo extends State<StocksInfo> {
               Row(
                 children: <Widget>[
                   Container(
-                    padding:
-                        EdgeInsets.only(top: 10.0, left: 15.0, bottom: 10.0),
-                    child: Text(
-                      fullStockName,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                      padding: EdgeInsets.only(
+                          top: 10.0, left: 10.0, right: 10.0, bottom: 10.0),
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          fullStockName,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )),
                   const Expanded(child: SizedBox()),
                 ],
               ),
@@ -270,7 +272,7 @@ class _StocksInfo extends State<StocksInfo> {
                                 ),
                                 SizedBox(height: 3.0),
                                 Text(
-                                  fiftyTwoWeekRange,
+                                  '\$' + fiftyTwoWeekRange,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.0,
