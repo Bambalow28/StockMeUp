@@ -33,7 +33,9 @@ class _StockPage extends State<StockPage> {
   late String formatDate;
   String formattedDate = '';
 
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  List watchlistNames = [];
+
+  FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
 
   //Responsible for the Bottom Navigation Bar
@@ -64,6 +66,31 @@ class _StockPage extends State<StockPage> {
     setState(() {
       user = auth.currentUser!;
       userId = user.uid;
+    });
+  }
+
+  getWatchlists() async {
+    // await firestoreInstance
+    //     .collection('users')
+    //     .doc(userId)
+    //     .collection("watchlists")
+    //     .get()
+    //     .then((value) => value.docs
+    //         .map((DocumentSnapshot documentSnapshot) =>
+    //             {watchlistNames.add(documentSnapshot.id)})
+    //         .toList());
+    firestoreInstance
+        .collection('users')
+        .doc(userId)
+        .collection("watchlists")
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        value.docs
+            .map((DocumentSnapshot documentSnapshot) =>
+                {watchlistNames.add(documentSnapshot.id)})
+            .toList();
+      });
     });
   }
 
@@ -138,6 +165,7 @@ class _StockPage extends State<StockPage> {
     getUserInfo();
     // getTrendingStocks();
     getNews();
+    getWatchlists();
   }
 
   @override
@@ -549,16 +577,19 @@ class _StockPage extends State<StockPage> {
                                                   GestureDetector(
                                                       onTap: () {
                                                         try {
-                                                          firebaseFirestore
-                                                              .collection(
-                                                                  'users')
-                                                              .doc(userId)
-                                                              .collection(
-                                                                  'watchlists')
-                                                              .doc(watchlistName
-                                                                  .text)
-                                                              .set({
-                                                            "high": 'test'
+                                                          setState(() {
+                                                            firestoreInstance
+                                                                .collection(
+                                                                    'users')
+                                                                .doc(userId)
+                                                                .collection(
+                                                                    'watchlists')
+                                                                .doc(
+                                                                    watchlistName
+                                                                        .text)
+                                                                .set({
+                                                              "high": 'test'
+                                                            });
                                                           });
                                                         } catch (e) {
                                                           print(e);
@@ -609,68 +640,70 @@ class _StockPage extends State<StockPage> {
                               ],
                             ),
                             Expanded(
-                              child: ListView.builder(
-                                  itemCount: 2,
-                                  scrollDirection: Axis.vertical,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                        margin: EdgeInsets.only(
-                                            left: 10.0, right: 10.0),
-                                        child: Theme(
-                                          data: Theme.of(context).copyWith(
-                                              unselectedWidgetColor:
-                                                  Colors.white),
-                                          child: Card(
-                                            color: Colors.grey[800],
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                  color: Colors.grey, width: 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
+                                child: ListView.builder(
+                                    itemCount: watchlistNames.length,
+                                    scrollDirection: Axis.vertical,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                          margin: EdgeInsets.only(
+                                              left: 10.0, right: 10.0),
+                                          child: Theme(
+                                            data: Theme.of(context).copyWith(
+                                                unselectedWidgetColor:
+                                                    Colors.white),
+                                            child: Card(
+                                              color: Colors.grey[800],
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                              child: ExpansionTile(
+                                                iconColor: Colors.white,
+                                                title: Text(
+                                                    watchlistNames[index],
+                                                    style: TextStyle(
+                                                        color: Colors.white)),
+                                                children: <Widget>[
+                                                  Column(
+                                                    children: <Widget>[
+                                                      Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  left: 10.0,
+                                                                  right: 10.0),
+                                                          child: Expanded(
+                                                            child: ListView
+                                                                .builder(
+                                                                    itemCount:
+                                                                        2,
+                                                                    scrollDirection:
+                                                                        Axis
+                                                                            .vertical,
+                                                                    itemBuilder:
+                                                                        (BuildContext
+                                                                                context,
+                                                                            int index) {
+                                                                      return Container(
+                                                                        child:
+                                                                            Text(
+                                                                          'APPL',
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      );
+                                                                    }),
+                                                          ))
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                            child: ExpansionTile(
-                                              iconColor: Colors.white,
-                                              title: Text('Long Term',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                              children: <Widget>[
-                                                Column(
-                                                  children: <Widget>[
-                                                    Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: 10.0,
-                                                            right: 10.0),
-                                                        child: Expanded(
-                                                          child:
-                                                              ListView.builder(
-                                                                  itemCount: 2,
-                                                                  scrollDirection:
-                                                                      Axis
-                                                                          .vertical,
-                                                                  itemBuilder:
-                                                                      (BuildContext
-                                                                              context,
-                                                                          int index) {
-                                                                    return Container(
-                                                                      child:
-                                                                          Text(
-                                                                        'APPL',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    );
-                                                                  }),
-                                                        ))
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ));
-                                  }),
-                            )
+                                          ));
+                                    }))
                           ],
                         ),
                       ),
@@ -722,71 +755,112 @@ class _StockPage extends State<StockPage> {
                                                     )));
                                       },
                                       child: Container(
-                                        margin: EdgeInsets.only(
-                                            left: 15.0,
-                                            right: 15.0,
-                                            bottom: 10.0),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 110.0,
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[300]!
-                                                .withOpacity(0.1),
-                                            border: Border.all(
-                                                color: Colors.grey, width: 1.0),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0))),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: 10.0,
-                                                    left: 10.0,
-                                                    right: 10.0),
-                                                child: Text(
-                                                  newsArticles[index]['title'],
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )),
-                                            Expanded(
-                                              child: SizedBox(),
-                                            ),
-                                            Row(
-                                              children: <Widget>[
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10.0,
-                                                        bottom: 5.0),
-                                                    child: Text(
-                                                      newsArticles[index]
-                                                          ['source']['name'],
-                                                      style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: 12.0,
-                                                      ),
-                                                    )),
-                                                Expanded(
-                                                  child: SizedBox(),
+                                          margin: EdgeInsets.only(
+                                              left: 15.0,
+                                              right: 15.0,
+                                              bottom: 10.0),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 150.0,
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey[300]!
+                                                  .withOpacity(0.1),
+                                              border: Border.all(
+                                                  color: Colors.grey,
+                                                  width: 1.0),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0))),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Container(
+                                                      width: 100.0,
+                                                      height: 100.0,
+                                                      margin: EdgeInsets.only(
+                                                          top: 10.0,
+                                                          left: 15.0,
+                                                          right: 5.0),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                        child: Image.network(
+                                                          newsArticles[index]
+                                                              ['urlToImage'],
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10.0,
+                                                          bottom: 5.0),
+                                                      child: Text(
+                                                        newsArticles[index]
+                                                            ['source']['name'],
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 12.0,
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 10.0,
+                                                                left: 10.0,
+                                                                right: 10.0),
+                                                        child: Text(
+                                                          newsArticles[index]
+                                                              ['title'],
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 14.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        )),
+                                                    Expanded(
+                                                      child: SizedBox(),
+                                                    ),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Expanded(
+                                                          child: SizedBox(),
+                                                        ),
+                                                        Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    right: 10.0,
+                                                                    bottom:
+                                                                        5.0),
+                                                            child: Text(
+                                                              formattedDate,
+                                                              style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 12.0,
+                                                              ),
+                                                            ))
+                                                      ],
+                                                    )
+                                                  ],
                                                 ),
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 10.0,
-                                                        bottom: 5.0),
-                                                    child: Text(
-                                                      formattedDate,
-                                                      style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: 12.0,
-                                                      ),
-                                                    ))
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ));
+                                              )
+                                            ],
+                                          )));
                                 })
                           ],
                         ),
