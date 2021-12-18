@@ -783,7 +783,7 @@ class _StockPage extends State<StockPage> {
                                                       height: 100.0,
                                                       margin: EdgeInsets.only(
                                                           top: 10.0,
-                                                          left: 15.0,
+                                                          left: 10.0,
                                                           right: 5.0),
                                                       child: ClipRRect(
                                                         borderRadius:
