@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:async';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 import 'package:newrandomproject/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //View News Page Widget
 class MainPage extends StatefulWidget {
@@ -46,6 +48,15 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  getUserLoginState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var status = prefs.getBool('isLoggedIn');
+
+    if (status == false) {
+      Navigator.of(context).push(loginRoute());
+    }
+  }
+
   //Get all data stored in Firestore in Firebase
   getDataFromFirebase() async {
     var check = await firestoreInstance
@@ -79,29 +90,21 @@ class _MainPage extends State<MainPage> {
   }
 
   //Check if Time is Between Market Hours
-  marketHours() {
-    DateFormat dateFormat = new DateFormat.Hm();
+  marketHours() async {
+    var marketHrs = Uri.parse(
+        'https://api.polygon.io/v1/marketstatus/now?apiKey=KoqKkSeNoEgp2qToI4l3mfyE0PmEriOf');
 
-    DateTime now = DateTime.now();
-    now = DateTime.parse(now.toString());
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'x-api-key': 'KoqKkSeNoEgp2qToI4l3mfyE0PmEriOf'
+    };
+    var res = await http.get(marketHrs, headers: headers);
 
-    var marketOpen = dateFormat.parse("9:30");
-    var marketClose = dateFormat.parse("16:00");
+    var jsonResponse = convert.jsonDecode(res.body);
+    var marketTime = jsonResponse['market'];
 
-    var formattedMarketOpen = DateTime(
-        now.year, now.month, now.day, marketOpen.hour, marketOpen.minute);
-
-    var formattedMarketClosed = DateTime(
-        now.year, now.month, now.day, marketClose.hour, marketClose.minute);
-
-    var timeTillMarketOpen = now.difference(formattedMarketOpen);
-    timeMarketOpen = timeTillMarketOpen.inSeconds;
-    int hour = timeMarketOpen ~/ 3600;
-    int minutes = ((timeMarketOpen - hour * 3600)) ~/ 60;
-    int seconds = timeMarketOpen - (hour * 3600) - (minutes * 60);
-
-    if (now.isAfter(formattedMarketOpen) &&
-        now.isBefore(formattedMarketClosed)) {
+    if (marketTime == 'open') {
       print("Market is Open");
       setState(() {
         marketStatus = "Market Open";
@@ -118,6 +121,7 @@ class _MainPage extends State<MainPage> {
 
   void initState() {
     super.initState();
+    getUserLoginState();
     marketHours();
     getDataFromFirebase();
   }
