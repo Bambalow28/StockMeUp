@@ -742,7 +742,9 @@ class _StockPage extends State<StockPage> {
 
                                   formattedDate = formatter.format(parsedDate);
 
-                                  // print(formattedDate);
+                                  var newsImage =
+                                      newsArticles[index]['urlToImage'];
+
                                   return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -789,11 +791,19 @@ class _StockPage extends State<StockPage> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        child: Image.network(
-                                                          newsArticles[index]
-                                                              ['urlToImage'],
-                                                          fit: BoxFit.cover,
-                                                        ),
+                                                        child: newsImage == null
+                                                            ? Image.asset(
+                                                                'lib/src/images/noImagePhoto.png',
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              )
+                                                            : Image.network(
+                                                                newsArticles[
+                                                                        index][
+                                                                    'urlToImage'],
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
                                                       )),
                                                   Expanded(
                                                     child: SizedBox(),
