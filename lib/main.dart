@@ -4,6 +4,7 @@ import 'package:newrandomproject/mainPages/verifiedHome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -44,10 +45,26 @@ class _LoginPageState extends State<LoginPage> {
 
   late FirebaseAuth auth;
   late final FirebaseFirestore firestoreInstance;
+  late SharedPreferences prefs;
 
   String loginText = 'Login';
-  late User user;
+  late User user = user;
   late var uid;
+
+  userLoggedIn() async {
+    prefs = await SharedPreferences.getInstance();
+    var status = prefs.getBool('isLoggedIn');
+
+    setState(() {
+      prefs.setBool("isLoggedIn", true);
+    });
+  }
+
+  checkLoginState() async {
+    prefs = await SharedPreferences.getInstance();
+
+    var status = prefs.getBool('isLoggedIn');
+  }
 
   //Initiate FlutterFire (Firebase)
   void initializeFire() async {
@@ -77,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         ModalRoute.withName("/LoginPage"));
   }
 
-  loginVerify() async {
+  Future loginVerify() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
@@ -86,19 +103,29 @@ class _LoginPageState extends State<LoginPage> {
         loginCheck = false;
         final User user = auth.currentUser!;
         final userId = user.uid;
-        bool userCheck = false;
+        late bool userChecking;
         firestoreInstance
             .collection('users')
             .doc(userId)
             .get()
-            .then((value) => userCheck = value.data()!['verified']);
-        if (userCheck == true) {
-          print('Redirecting To Verified Home...');
-          Future.delayed(Duration(seconds: 1), () => {goToVerifiedHome()});
-        } else {
-          print('Redirecting To Home...');
-          Future.delayed(Duration(seconds: 1), () => {goToHomePage()});
-        }
+            .then((value) => userChecking = value.data()!['verified']);
+        Future.delayed(
+            Duration(seconds: 2),
+            () => {
+                  if (userChecking == true)
+                    {
+                      loginMessage = 'Loading...',
+                      Future.delayed(
+                          Duration(seconds: 1), () => {goToVerifiedHome()})
+                    }
+                  else
+                    {
+                      loginMessage = 'Loading...',
+                      Future.delayed(
+                          Duration(seconds: 1), () => {goToHomePage()})
+                    },
+                  userLoggedIn()
+                });
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -129,6 +156,7 @@ class _LoginPageState extends State<LoginPage> {
             .set({'email': emailAddress.text, 'verified': false});
         loginMessage = 'Account Successfully Created';
         Future.delayed(const Duration(seconds: 1), () => {goToHomePage()});
+        userLoggedIn();
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -151,6 +179,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     initializeFire();
+    checkLoginState();
   }
 
   @override
