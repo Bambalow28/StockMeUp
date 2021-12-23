@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:newrandomproject/routes.dart';
 import 'package:newrandomproject/stocksPage/stocksInfo.dart';
 import 'package:newrandomproject/stocksPage/newsInfo.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 //View News Page Widget
 class StockPage extends StatefulWidget {
@@ -671,32 +672,27 @@ class _StockPage extends State<StockPage> {
                                                   Column(
                                                     children: <Widget>[
                                                       Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  left: 10.0,
-                                                                  right: 10.0),
-                                                          child: Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                                    itemCount:
-                                                                        2,
-                                                                    scrollDirection:
-                                                                        Axis
-                                                                            .vertical,
-                                                                    itemBuilder:
-                                                                        (BuildContext
-                                                                                context,
-                                                                            int index) {
-                                                                      return Container(
-                                                                        child:
-                                                                            Text(
-                                                                          'APPL',
-                                                                          style:
-                                                                              TextStyle(color: Colors.white),
-                                                                        ),
-                                                                      );
-                                                                    }),
-                                                          ))
+                                                        margin: EdgeInsets.only(
+                                                            left: 10.0,
+                                                            right: 10.0),
+                                                        child: ListView.builder(
+                                                            itemCount: 2,
+                                                            scrollDirection:
+                                                                Axis.vertical,
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    int index) {
+                                                              return Container(
+                                                                child: Text(
+                                                                  'APPL',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              );
+                                                            }),
+                                                      )
                                                     ],
                                                   )
                                                 ],
@@ -831,7 +827,7 @@ class _StockPage extends State<StockPage> {
                                                                 top: 10.0,
                                                                 left: 10.0,
                                                                 right: 10.0),
-                                                        child: Text(
+                                                        child: AutoSizeText(
                                                           newsArticles[index]
                                                               ['title'],
                                                           style: TextStyle(
@@ -841,6 +837,7 @@ class _StockPage extends State<StockPage> {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold),
+                                                          maxLines: 5,
                                                         )),
                                                     Expanded(
                                                       child: SizedBox(),
