@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:newrandomproject/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //View News Page Widget
 class ProfilePage extends StatefulWidget {
@@ -11,6 +14,15 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePage extends State<ProfilePage> {
   String appBarTitle = "Profile";
   int pageIndex = 3;
+
+  late FirebaseAuth auth;
+  late final FirebaseFirestore firestoreInstance;
+
+  TextEditingController applicationMessage = new TextEditingController();
+
+  bool userVerified = false;
+  var userId;
+  var getEmail;
 
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
@@ -34,9 +46,49 @@ class _ProfilePage extends State<ProfilePage> {
     });
   }
 
+  initiateConnection() {
+    setState(() {
+      auth = FirebaseAuth.instance;
+      firestoreInstance = FirebaseFirestore.instance;
+      print('DB Initialized');
+    });
+  }
+
+  checkVerifyUser() async {
+    User user = auth.currentUser!;
+    bool userCheck = false;
+    setState(() {
+      userId = user.uid;
+      getEmail = auth.currentUser!.email;
+      print(getEmail);
+
+      firestoreInstance
+          .collection('users')
+          .doc(userId)
+          .get()
+          .then((value) => userCheck = value.data()!['verified']);
+      if (userCheck == true) {
+        userVerified = true;
+      } else {
+        userVerified = false;
+      }
+    });
+  }
+
   //Logout Clicked
-  logOutClicked() {
+  logOutClicked() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setBool("isLoggedIn", false);
+    });
     Navigator.of(context).push(loginRoute());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initiateConnection();
+    Future.delayed(Duration(seconds: 1), () => {checkVerifyUser()});
   }
 
   @override
@@ -146,14 +198,22 @@ class _ProfilePage extends State<ProfilePage> {
                                     fontWeight: FontWeight.bold)),
                             Row(
                               children: <Widget>[
-                                Text('Verified',
-                                    style: TextStyle(
-                                        color: Colors.cyan[400],
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold)),
+                                userVerified
+                                    ? Text('Verified',
+                                        style: TextStyle(
+                                            color: Colors.cyan[400],
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold))
+                                    : Text('Not Verified',
+                                        style: TextStyle(
+                                            color: Colors.grey[700],
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold)),
                                 SizedBox(width: 5.0),
-                                Icon(Icons.check_circle_rounded,
-                                    color: Colors.blue[300], size: 20.0)
+                                userVerified
+                                    ? Icon(Icons.check_circle_rounded,
+                                        color: Colors.blue[300], size: 20.0)
+                                    : Container()
                               ],
                             )
                           ],
@@ -265,11 +325,72 @@ class _ProfilePage extends State<ProfilePage> {
                                         )),
                                     Container(
                                       margin: EdgeInsets.only(
-                                          left: 10.0, right: 10.0),
+                                          top: 20.0, left: 10.0, right: 10.0),
                                       child: TextField(
+                                        controller: applicationMessage,
                                         maxLines: 10,
+                                        decoration: InputDecoration(
+                                            hintText:
+                                                'Why Should we Accept you?',
+                                            enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 2.0),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10.0))),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 2.0),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10.0)))),
                                       ),
                                     ),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          firestoreInstance
+                                              .collection('userApplications')
+                                              .doc(userId)
+                                              .set({
+                                            'email': getEmail,
+                                            'message': applicationMessage.text
+                                          });
+                                          Future.delayed(
+                                              Duration(seconds: 1),
+                                              () => {
+                                                    Navigator.of(context).pop()
+                                                  });
+                                        },
+                                        child: Container(
+                                            margin:
+                                                EdgeInsets.only(bottom: 20.0),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                60,
+                                            height: 50.0,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green[300],
+                                                borderRadius: BorderRadius.all(
+                                                    (Radius.circular(30.0)))),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Submit Application',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ],
+                                            )))
                                   ],
                                 );
                               });
