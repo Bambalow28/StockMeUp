@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 import 'package:newrandomproject/routes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //View News Page Widget
 class VerifiedHome extends StatefulWidget {
@@ -10,7 +15,15 @@ class VerifiedHome extends StatefulWidget {
 //View News Widget State
 class _VerifiedHome extends State<VerifiedHome> {
   String appBarTitle = "Home";
+  String marketStatus = '';
+  bool marketStatusCheck = false;
   int pageIndex = 0;
+  int timeMarketOpen = 0;
+
+  //Texts for each signals
+  var signalCount = [];
+
+  final firestoreInstance = FirebaseFirestore.instance;
 
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
@@ -33,6 +46,84 @@ class _VerifiedHome extends State<VerifiedHome> {
           break;
       }
     });
+  }
+
+  getUserLoginState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var status = prefs.getBool('isLoggedIn');
+
+    if (status == false) {
+      Navigator.of(context).push(loginRoute());
+    }
+  }
+
+  //Get all data stored in Firestore in Firebase
+  getDataFromFirebase() async {
+    var check = await firestoreInstance
+        .collection("verifiedUsers")
+        .doc("Bambalow28")
+        .collection("signalPosts")
+        .get();
+  }
+
+  //Show Market Status (When it opens)
+  showMarketStatus(BuildContext context) {
+    Widget okBtn = TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('Got it!'));
+
+    AlertDialog marketClosedAlert = AlertDialog(
+      title: marketStatusCheck ? Text('MARKET OPEN') : Text('MARKET CLOSED'),
+      content: marketStatusCheck
+          ? Text('Market is open until 4:00PM EST')
+          : Text('Market Opens in ' + ' ' + '$timeMarketOpen'),
+      actions: [okBtn],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return marketClosedAlert;
+        });
+  }
+
+  //Check if Time is Between Market Hours
+  marketHours() async {
+    var marketHrs = Uri.parse(
+        'https://api.polygon.io/v1/marketstatus/now?apiKey=KoqKkSeNoEgp2qToI4l3mfyE0PmEriOf');
+
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'x-api-key': 'KoqKkSeNoEgp2qToI4l3mfyE0PmEriOf'
+    };
+    var res = await http.get(marketHrs, headers: headers);
+
+    var jsonResponse = convert.jsonDecode(res.body);
+    var marketTime = jsonResponse['market'];
+
+    if (marketTime == 'open') {
+      print("Market is Open");
+      setState(() {
+        marketStatus = "Market Open";
+        marketStatusCheck = true;
+      });
+    } else {
+      print("Market is Closed");
+      setState(() {
+        marketStatus = "Market Closed";
+        marketStatusCheck = false;
+      });
+    }
+  }
+
+  void initState() {
+    super.initState();
+    getUserLoginState();
+    marketHours();
+    getDataFromFirebase();
   }
 
   @override
@@ -91,18 +182,46 @@ class _VerifiedHome extends State<VerifiedHome> {
         body: GestureDetector(
             onTap: () => {FocusScope.of(context).requestFocus(new FocusNode())},
             child: Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color.fromRGBO(23, 23, 23, 1),
-                    Color.fromRGBO(13, 13, 13, 1)
-                  ],
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color.fromRGBO(23, 23, 23, 1),
+                      Color.fromRGBO(13, 13, 13, 1)
+                    ],
+                  ),
                 ),
-              ),
-            )),
+                child: Column(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        showMarketStatus(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(5.0),
+                        margin: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width - 100,
+                        decoration: BoxDecoration(
+                            color: marketStatusCheck
+                                ? Colors.green[400]
+                                : Colors.red[400],
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        child: Text(
+                          marketStatus,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ))),
         floatingActionButton: FloatingActionButton(
           elevation: 5.0,
           child: Icon(Icons.create_rounded),
