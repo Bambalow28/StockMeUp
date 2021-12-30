@@ -56,22 +56,30 @@ class _ProfilePage extends State<ProfilePage> {
 
   checkVerifyUser() async {
     User user = auth.currentUser!;
-    bool userCheck = false;
+    late bool userCheck;
     setState(() {
       userId = user.uid;
       getEmail = auth.currentUser!.email;
-      print(getEmail);
 
       firestoreInstance
           .collection('users')
           .doc(userId)
           .get()
-          .then((value) => userCheck = value.data()!['verified']);
-      if (userCheck == true) {
-        userVerified = true;
-      } else {
-        userVerified = false;
-      }
+          .then((value) => userVerified = value.data()!['verified'])
+          .then((verifyCheck) => {
+                if (verifyCheck == true)
+                  {
+                    setState(() {
+                      userVerified = true;
+                    })
+                  }
+                else
+                  {
+                    setState(() {
+                      userVerified = false;
+                    })
+                  }
+              });
     });
   }
 
@@ -88,7 +96,7 @@ class _ProfilePage extends State<ProfilePage> {
   void initState() {
     super.initState();
     initiateConnection();
-    Future.delayed(Duration(seconds: 1), () => {checkVerifyUser()});
+    checkVerifyUser();
   }
 
   @override

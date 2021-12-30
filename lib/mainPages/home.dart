@@ -78,18 +78,25 @@ class _MainPage extends State<MainPage> {
     final User user = auth.currentUser!;
     final userId = user.uid;
     late bool userChecking;
-    firestoreInstance
+    await firestoreInstance
         .collection('users')
         .doc(userId)
         .get()
-        .then((value) => userChecking = value.data()!['verified']);
-    Future.delayed(Duration(milliseconds: 100), () {
-      if (userChecking == true) {
-        goToVerifiedHome();
-      } else {
-        goToHomePage();
-      }
-    });
+        .then((value) => userChecking = value.data()!['verified'])
+        .then((verifyCheck) => {
+              if (verifyCheck == true)
+                {
+                  setState(() {
+                    goToVerifiedHome();
+                  })
+                }
+              else
+                {
+                  setState(() {
+                    goToHomePage();
+                  })
+                }
+            });
   }
 
   //Get all data stored in Firestore in Firebase

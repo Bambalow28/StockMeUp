@@ -108,10 +108,8 @@ class _LoginPageState extends State<LoginPage> {
             .collection('users')
             .doc(userId)
             .get()
-            .then((value) => userChecking = value.data()!['verified']);
-        Future.delayed(
-            Duration(seconds: 2),
-            () => {
+            .then((value) => userChecking = value.data()!['verified'])
+            .then((verifyCheck) => {
                   if (userChecking == true)
                     {
                       loginMessage = 'Loading...',
