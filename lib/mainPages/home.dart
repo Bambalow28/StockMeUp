@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:newrandomproject/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:newrandomproject/mainPages/verifiedHome.dart';
 
 //View News Page Widget
 class MainPage extends StatefulWidget {
@@ -24,6 +26,9 @@ class _MainPage extends State<MainPage> {
   var signalCount = [];
 
   final firestoreInstance = FirebaseFirestore.instance;
+  final auth = FirebaseAuth.instance;
+
+  late var uid;
 
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
@@ -48,6 +53,20 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  goToHomePage() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage()),
+        ModalRoute.withName("/LoginPage"));
+  }
+
+  goToVerifiedHome() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => VerifiedHome()),
+        ModalRoute.withName("/LoginPage"));
+  }
+
   getUserLoginState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var status = prefs.getBool('isLoggedIn');
@@ -55,6 +74,22 @@ class _MainPage extends State<MainPage> {
     if (status == false) {
       Navigator.of(context).push(loginRoute());
     }
+
+    final User user = auth.currentUser!;
+    final userId = user.uid;
+    late bool userChecking;
+    firestoreInstance
+        .collection('users')
+        .doc(userId)
+        .get()
+        .then((value) => userChecking = value.data()!['verified']);
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (userChecking == true) {
+        goToVerifiedHome();
+      } else {
+        goToHomePage();
+      }
+    });
   }
 
   //Get all data stored in Firestore in Firebase
@@ -209,9 +244,9 @@ class _MainPage extends State<MainPage> {
                 Expanded(
                   child: StreamBuilder(
                     stream: firestoreInstance
-                        .collection("verifiedUsers")
+                        .collection("posts")
                         .doc("Bambalow28")
-                        .collection("signalPosts")
+                        .collection("public")
                         .snapshots(),
                     builder:
                         (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
