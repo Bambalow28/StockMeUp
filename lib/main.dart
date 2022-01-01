@@ -148,13 +148,14 @@ class _LoginPageState extends State<LoginPage> {
       final userId = user.uid;
       setState(() {
         loginCheck = false;
-        firestoreInstance
-            .collection('users')
-            .doc(userId)
-            .set({'email': emailAddress.text, 'verified': false});
-        loginMessage = 'Account Successfully Created';
-        Future.delayed(const Duration(seconds: 1), () => {goToHomePage()});
-        userLoggedIn();
+        firestoreInstance.collection('users').doc(userId).set({
+          'email': emailAddress.text,
+          'verified': false
+        }).then((verifyCheck) => {
+              loginMessage = 'Account Successfully Created',
+              Future.delayed(Duration(seconds: 1), () => {goToHomePage()}),
+              userLoggedIn()
+            });
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
