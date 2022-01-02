@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:newrandomproject/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 //View News Page Widget
 class postSignal extends StatefulWidget {
@@ -15,6 +17,13 @@ class _postSignal extends State<postSignal> {
   bool addMore = false;
   bool sell = false;
   String signal = '';
+  String signalMessage = 'Send Signal';
+
+  bool privatePost = false;
+
+  DateTime timeNow = DateTime.now();
+  DateFormat formatter = DateFormat.yMd().add_jm();
+  String formattedDate = '';
 
   TextEditingController tickerSymbol = new TextEditingController();
   TextEditingController signalPost = new TextEditingController();
@@ -22,6 +31,38 @@ class _postSignal extends State<postSignal> {
 
   //Create Firebase Instance
   final firestoreInstance = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var userId;
+
+  int signalNum = 0;
+  List tickerInfo = [];
+
+  getUserSignals() async {
+    await firestoreInstance
+        .collection('posts')
+        .doc('public')
+        .collection(userId)
+        .get()
+        .then((value) => value.docs.map((signalData) => {
+              setState(() {
+                tickerInfo.add(signalData);
+                signalNum = tickerInfo.length;
+              })
+            }));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    User user = auth.currentUser!;
+    userId = user.uid;
+    getUserSignals();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,37 +251,217 @@ class _postSignal extends State<postSignal> {
                         )
                       ],
                     ),
+                    Container(
+                      margin:
+                          EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(30.0))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                              child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                privatePost = false;
+
+                                if (privatePost = true) {
+                                  privatePost = false;
+                                }
+                              });
+                            },
+                            child: Text(
+                              'Public',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 16.0),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                          VerticalDivider(
+                            color: Colors.grey,
+                            width: 2.0,
+                          ),
+                          Expanded(
+                              child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                privatePost = true;
+
+                                if (privatePost = false) {
+                                  privatePost = true;
+                                }
+                              });
+                            },
+                            child: Text(
+                              'Private',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 16.0),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                        ],
+                      ),
+                    ),
                     Expanded(
                       child: Container(
-                        width: MediaQuery.of(context).size.width - 20,
-                        margin: EdgeInsets.only(top: 20.0),
-                        padding: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                            color: Colors.grey[900],
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0))),
-                        child: Text(
-                          'Signal History',
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0),
-                        ),
-                      ),
+                          width: MediaQuery.of(context).size.width - 80,
+                          margin: EdgeInsets.only(top: 20.0),
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                              color: Colors.grey[900],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                'Signal History',
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Expanded(
+                                  child: ListView.builder(
+                                      itemCount: signalNum,
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        var formatDate =
+                                            tickerInfo[index]['timePosted'];
+                                        var parsedDate = DateTime.parse(
+                                            formatDate.toDate().toString());
+
+                                        formattedDate =
+                                            formatter.format(parsedDate);
+
+                                        return Container(
+                                          margin: EdgeInsets.only(
+                                              left: 10.0,
+                                              right: 10.0,
+                                              bottom: 10.0),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 100.0,
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey[800],
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0))),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 10.0,
+                                                          left: 10.0),
+                                                      child: Text(
+                                                        tickerInfo[index]
+                                                            ['tickerSymbol'],
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 24.0),
+                                                      )),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 10.0,
+                                                          right: 20.0),
+                                                      child: Text(
+                                                        tickerInfo[index]
+                                                            ['signal'],
+                                                        style: TextStyle(
+                                                            color: Colors.green,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20.0),
+                                                      )),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 5.0, left: 10.0),
+                                                      child: Text(
+                                                        tickerInfo[index]
+                                                            ['signalPost'],
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16.0),
+                                                      )),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  )
+                                                ],
+                                              ),
+                                              Expanded(
+                                                child: SizedBox(),
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10.0,
+                                                        bottom: 5.0),
+                                                    child: Text(
+                                                      'Public',
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 12.0),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 10.0,
+                                                        bottom: 5.0),
+                                                    child: Text(
+                                                      formattedDate,
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 12.0),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }))
+                            ],
+                          )),
                     ),
                     GestureDetector(
                       onTap: () {
+                        signalMessage = 'Posting...';
                         firestoreInstance
-                            .collection("verifiedUsers")
-                            .doc("Bambalow28")
-                            .collection("signalPosts")
-                            .doc('post_02')
+                            .collection("posts")
+                            .doc("public")
+                            .collection(userId)
+                            .doc(timeNow.toString())
                             .set({
                           "tickerSymbol": tickerSymbol.text,
                           "signalPost": signalPost.text,
                           "signal": signal,
-                          "timePosted": '00:00 AM'
-                        });
+                          "timePosted": timeNow
+                        }).then((value) => Timer(Duration(seconds: 1), () {
+                                  setState(() {
+                                    signalMessage = "Successfully Posted";
+                                  });
+                                }));
                       },
                       child: Container(
                           margin: EdgeInsets.only(
@@ -253,7 +474,7 @@ class _postSignal extends State<postSignal> {
                           child: Align(
                             alignment: Alignment.center,
                             child: Text(
-                              'Send Signal',
+                              signalMessage,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
