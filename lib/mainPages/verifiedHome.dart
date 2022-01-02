@@ -202,7 +202,7 @@ class _VerifiedHome extends State<VerifiedHome> {
                       },
                       child: Container(
                         padding: EdgeInsets.all(5.0),
-                        margin: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        margin: EdgeInsets.only(top: 20.0, bottom: 25.0),
                         alignment: Alignment.center,
                         width: MediaQuery.of(context).size.width - 100,
                         decoration: BoxDecoration(
@@ -220,6 +220,101 @@ class _VerifiedHome extends State<VerifiedHome> {
                         ),
                       ),
                     ),
+                    Expanded(
+                        child: ListView.builder(
+                            itemCount: 2,
+                            scrollDirection: Axis.vertical,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                margin: EdgeInsets.only(
+                                    left: 20.0, right: 20.0, bottom: 10.0),
+                                width: MediaQuery.of(context).size.width,
+                                height: 100.0,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[850],
+                                    border: Border.all(
+                                        color: Colors.green, width: 1.0),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                child: Column(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 10.0, left: 10.0),
+                                            child: Text(
+                                              'APPL',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 24.0),
+                                            )),
+                                        Expanded(
+                                          child: SizedBox(),
+                                        ),
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 10.0, right: 20.0),
+                                            child: Text(
+                                              'BUY',
+                                              style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.0),
+                                            )),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 5.0, left: 10.0),
+                                            child: Text(
+                                              'BUY @ \$179.60',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16.0),
+                                            )),
+                                        Expanded(
+                                          child: SizedBox(),
+                                        )
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10.0, bottom: 5.0),
+                                          child: Text(
+                                            '@Bambalow28',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12.0),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: SizedBox(),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              right: 10.0, bottom: 5.0),
+                                          child: Text(
+                                            '1/1/2022 10:40PM',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12.0),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              );
+                            }))
                   ],
                 ))),
         floatingActionButton: FloatingActionButton(
