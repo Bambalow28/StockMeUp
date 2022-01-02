@@ -768,13 +768,9 @@ class _StockPage extends State<StockPage> {
                                                   width: 1.0),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(10.0))),
-                                          child: Row(
+                                          child: Column(
                                             children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                              Row(
                                                 children: <Widget>[
                                                   Container(
                                                       width: 100.0,
@@ -801,27 +797,8 @@ class _StockPage extends State<StockPage> {
                                                                     .cover,
                                                               ),
                                                       )),
-                                                  Expanded(
-                                                    child: SizedBox(),
-                                                  ),
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10.0,
-                                                          bottom: 5.0),
-                                                      child: Text(
-                                                        newsArticles[index]
-                                                            ['source']['name'],
-                                                        style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12.0,
-                                                        ),
-                                                      )),
-                                                ],
-                                              ),
-                                              Expanded(
-                                                child: Column(
-                                                  children: <Widget>[
-                                                    Padding(
+                                                  Flexible(
+                                                    child: Padding(
                                                         padding:
                                                             EdgeInsets.only(
                                                                 top: 10.0,
@@ -830,6 +807,8 @@ class _StockPage extends State<StockPage> {
                                                         child: AutoSizeText(
                                                           newsArticles[index]
                                                               ['title'],
+                                                          overflow: TextOverflow
+                                                              .visible,
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.white,
@@ -839,11 +818,34 @@ class _StockPage extends State<StockPage> {
                                                                       .bold),
                                                           maxLines: 5,
                                                         )),
+                                                  ),
+                                                ],
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  children: <Widget>[
                                                     Expanded(
                                                       child: SizedBox(),
                                                     ),
                                                     Row(
                                                       children: <Widget>[
+                                                        Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 10.0,
+                                                                    bottom:
+                                                                        5.0),
+                                                            child: Text(
+                                                              newsArticles[
+                                                                          index]
+                                                                      ['source']
+                                                                  ['name'],
+                                                              style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 12.0,
+                                                              ),
+                                                            )),
                                                         Expanded(
                                                           child: SizedBox(),
                                                         ),
@@ -868,6 +870,106 @@ class _StockPage extends State<StockPage> {
                                               )
                                             ],
                                           )));
+                                  // child: Row(
+                                  //   children: <Widget>[
+                                  //     Column(
+                                  //       mainAxisAlignment:
+                                  //           MainAxisAlignment.start,
+                                  //       crossAxisAlignment:
+                                  //           CrossAxisAlignment.start,
+                                  //       children: <Widget>[
+                                  //         Container(
+                                  //             width: 100.0,
+                                  //             height: 100.0,
+                                  //             margin: EdgeInsets.only(
+                                  //                 top: 10.0,
+                                  //                 left: 10.0,
+                                  //                 right: 5.0),
+                                  //             child: ClipRRect(
+                                  //               borderRadius:
+                                  //                   BorderRadius
+                                  //                       .circular(10.0),
+                                  //               child: newsImage == null
+                                  //                   ? Image.asset(
+                                  //                       'lib/src/images/noImagePhoto.png',
+                                  //                       fit: BoxFit
+                                  //                           .cover,
+                                  //                     )
+                                  //                   : Image.network(
+                                  //                       newsArticles[
+                                  //                               index][
+                                  //                           'urlToImage'],
+                                  //                       fit: BoxFit
+                                  //                           .cover,
+                                  //                     ),
+                                  //             )),
+                                  //         Expanded(
+                                  //           child: SizedBox(),
+                                  //         ),
+                                  //         Padding(
+                                  //             padding: EdgeInsets.only(
+                                  //                 left: 10.0,
+                                  //                 bottom: 5.0),
+                                  //             child: Text(
+                                  //               newsArticles[index]
+                                  //                   ['source']['name'],
+                                  //               style: TextStyle(
+                                  //                 color: Colors.grey,
+                                  //                 fontSize: 12.0,
+                                  //               ),
+                                  //             )),
+                                  //       ],
+                                  //     ),
+                                  //     Expanded(
+                                  //       child: Column(
+                                  //         children: <Widget>[
+                                  //           Padding(
+                                  //               padding:
+                                  //                   EdgeInsets.only(
+                                  //                       top: 10.0,
+                                  //                       left: 10.0,
+                                  //                       right: 10.0),
+                                  //               child: AutoSizeText(
+                                  //                 newsArticles[index]
+                                  //                     ['title'],
+                                  //                 style: TextStyle(
+                                  //                     color:
+                                  //                         Colors.white,
+                                  //                     fontSize: 14.0,
+                                  //                     fontWeight:
+                                  //                         FontWeight
+                                  //                             .bold),
+                                  //                 maxLines: 5,
+                                  //               )),
+                                  //           Expanded(
+                                  //             child: SizedBox(),
+                                  //           ),
+                                  //           Row(
+                                  //             children: <Widget>[
+                                  //               Expanded(
+                                  //                 child: SizedBox(),
+                                  //               ),
+                                  //               Padding(
+                                  //                   padding:
+                                  //                       EdgeInsets.only(
+                                  //                           right: 10.0,
+                                  //                           bottom:
+                                  //                               5.0),
+                                  //                   child: Text(
+                                  //                     formattedDate,
+                                  //                     style: TextStyle(
+                                  //                       color:
+                                  //                           Colors.grey,
+                                  //                       fontSize: 12.0,
+                                  //                     ),
+                                  //                   ))
+                                  //             ],
+                                  //           )
+                                  //         ],
+                                  //       ),
+                                  //     )
+                                  //   ],
+                                  // )));
                                 })
                           ],
                         ),
