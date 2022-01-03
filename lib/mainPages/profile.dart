@@ -228,17 +228,21 @@ class _ProfilePage extends State<ProfilePage> {
                         )),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 20.0),
+                    margin: EdgeInsets.only(top: 20.0, left: 30.0, right: 30.0),
+                    width: MediaQuery.of(context).size.width,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                          width: 150.0,
+                        Expanded(
+                            child: Container(
                           height: 50.0,
                           decoration: BoxDecoration(
-                              color: Colors.grey[900],
-                              border:
-                                  Border.all(color: Colors.grey, width: 1.0),
+                              color: Colors.grey[800],
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.0))),
                           child: Column(
@@ -250,17 +254,18 @@ class _ProfilePage extends State<ProfilePage> {
                                   style: TextStyle(color: Colors.grey))
                             ],
                           ),
+                        )),
+                        VerticalDivider(
+                          color: Colors.grey,
+                          width: 2.0,
                         ),
-                        const SizedBox(width: 10.0),
-                        Container(
-                          width: 150.0,
+                        Expanded(
+                            child: Container(
                           height: 50.0,
                           decoration: BoxDecoration(
-                              color: Colors.grey[900],
-                              border:
-                                  Border.all(color: Colors.grey, width: 1.0),
+                              color: Colors.grey[800],
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
+                                  BorderRadius.all(Radius.circular(20.0))),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -271,10 +276,58 @@ class _ProfilePage extends State<ProfilePage> {
                                   style: TextStyle(color: Colors.grey))
                             ],
                           ),
-                        )
+                        )),
                       ],
                     ),
                   ),
+                  // Container(
+                  //   margin: EdgeInsets.only(top: 20.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: <Widget>[
+                  //       Container(
+                  //         width: 150.0,
+                  //         height: 50.0,
+                  //         decoration: BoxDecoration(
+                  //             color: Colors.grey[900],
+                  //             border:
+                  //                 Border.all(color: Colors.grey, width: 1.0),
+                  //             borderRadius:
+                  //                 BorderRadius.all(Radius.circular(10.0))),
+                  //         child: Column(
+                  //           mainAxisAlignment: MainAxisAlignment.center,
+                  //           crossAxisAlignment: CrossAxisAlignment.center,
+                  //           children: <Widget>[
+                  //             Text('10', style: TextStyle(color: Colors.white)),
+                  //             Text('Following',
+                  //                 style: TextStyle(color: Colors.grey))
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       const SizedBox(width: 10.0),
+                  //       Container(
+                  //         width: 150.0,
+                  //         height: 50.0,
+                  //         decoration: BoxDecoration(
+                  //             color: Colors.grey[900],
+                  //             border:
+                  //                 Border.all(color: Colors.grey, width: 1.0),
+                  //             borderRadius:
+                  //                 BorderRadius.all(Radius.circular(10.0))),
+                  //         child: Column(
+                  //           mainAxisAlignment: MainAxisAlignment.center,
+                  //           crossAxisAlignment: CrossAxisAlignment.center,
+                  //           children: <Widget>[
+                  //             Text('12.5M',
+                  //                 style: TextStyle(color: Colors.white)),
+                  //             Text('Followers',
+                  //                 style: TextStyle(color: Colors.grey))
+                  //           ],
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -409,7 +462,9 @@ class _ProfilePage extends State<ProfilePage> {
                             alignment: Alignment.center,
                             margin: EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
-                                color: Colors.blue[300],
+                                color: Colors.grey[850],
+                                border:
+                                    Border.all(color: Colors.blue, width: 1.0),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0))),
                             child: Column(
@@ -418,7 +473,7 @@ class _ProfilePage extends State<ProfilePage> {
                                   padding: EdgeInsets.only(top: 5.0),
                                   child: Icon(
                                     Icons.signal_cellular_alt_rounded,
-                                    color: Colors.white,
+                                    color: Colors.blue[300],
                                     size: 50.0,
                                   ),
                                 ),
@@ -442,7 +497,9 @@ class _ProfilePage extends State<ProfilePage> {
                             alignment: Alignment.center,
                             margin: EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
-                                color: Colors.deepPurple[300],
+                                color: Colors.grey[850],
+                                border: Border.all(
+                                    color: Colors.deepPurple, width: 1.0),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0))),
                             child: Column(
@@ -451,7 +508,7 @@ class _ProfilePage extends State<ProfilePage> {
                                   padding: EdgeInsets.only(top: 5.0),
                                   child: Icon(
                                     Icons.attach_money_rounded,
-                                    color: Colors.white,
+                                    color: Colors.deepPurple[300],
                                     size: 50.0,
                                   ),
                                 ),
