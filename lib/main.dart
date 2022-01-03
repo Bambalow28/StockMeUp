@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:newrandomproject/mainPages/home.dart';
 import 'package:newrandomproject/mainPages/verifiedHome.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -354,13 +355,15 @@ class _LoginPageState extends State<LoginPage> {
                               alignment: Alignment.center,
                               margin: EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Colors.grey[850],
+                                  border: Border.all(
+                                      color: Colors.green, width: 1.0),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(30.0))),
                               child: Text(
                                 "Sign Up",
                                 style: TextStyle(
-                                    color: Colors.green[400], fontSize: 20.0),
+                                    color: Colors.white, fontSize: 20.0),
                               ),
                             )),
                   Padding(

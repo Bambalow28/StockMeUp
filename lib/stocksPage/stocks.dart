@@ -761,7 +761,7 @@ class _StockPage extends State<StockPage> {
                                               MediaQuery.of(context).size.width,
                                           height: 150.0,
                                           decoration: BoxDecoration(
-                                              color: Colors.grey[300]!
+                                              color: Colors.grey[400]!
                                                   .withOpacity(0.1),
                                               border: Border.all(
                                                   color: Colors.grey,

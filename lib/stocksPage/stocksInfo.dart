@@ -64,7 +64,7 @@ class _StocksInfo extends State<StocksInfo> {
     setState(() {
       List stockInfo = [];
       stockInfo = jsonResp['quoteResponse']['result'];
-      fullStockName = stockInfo[0]['displayName'];
+      // fullStockName = stockInfo[0]['displayName'];
       fiftyTwoWeekRange = stockInfo[0]['fiftyTwoWeekRange'];
       marketCap = stockInfo[0]['marketCap'];
       formattedMarketCap =

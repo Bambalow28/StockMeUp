@@ -53,50 +53,49 @@ class _MainPage extends State<MainPage> {
     });
   }
 
-  goToHomePage() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => MainPage()),
-        ModalRoute.withName("/LoginPage"));
+  Route goToHomePage() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => MainPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+    );
   }
 
-  goToVerifiedHome() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => VerifiedHome()),
-        ModalRoute.withName("/LoginPage"));
+  Route goToVerifiedHome() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => VerifiedHome(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+    );
   }
 
   getUserLoginState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var status = prefs.getBool('isLoggedIn');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // var status = prefs.getBool('isLoggedIn');
 
-    if (status == false) {
-      Navigator.of(context).push(loginRoute());
-    }
+    // if (status == false) {
+    //   Navigator.of(context).push(loginRoute());
+    // }
 
     final User user = auth.currentUser!;
     final userId = user.uid;
     late bool userChecking;
-    await firestoreInstance
-        .collection('users')
-        .doc(userId)
-        .get()
-        .then((value) => userChecking = value.data()!['verified'])
-        .then((verifyCheck) => {
-              if (verifyCheck == true)
-                {
-                  setState(() {
-                    goToVerifiedHome();
-                  })
-                }
-              else
-                {
-                  setState(() {
-                    goToHomePage();
-                  })
-                }
-            });
+    var check = await firestoreInstance.collection('users').doc(userId).get();
+
+    setState(() {
+      userChecking = check.data()!['verified'];
+      if (userChecking == true) {
+        goToVerifiedHome();
+        print('Verified');
+      } else if (userChecking == false) {
+        goToHomePage();
+        print('Not Verified');
+      } else {
+        print('Oops! Something Went Wrong!');
+      }
+    });
   }
 
   //Get all data stored in Firestore in Firebase
@@ -249,154 +248,98 @@ class _MainPage extends State<MainPage> {
                   ),
                 ),
                 Expanded(
-                  child: StreamBuilder(
-                    stream: firestoreInstance
-                        .collection("posts")
-                        .doc("Bambalow28")
-                        .collection("public")
-                        .snapshots(),
-                    builder:
-                        (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                      return Container(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: streamSnapshot.data?.docs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
+                    child: ListView.builder(
+                        itemCount: 2,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            margin: EdgeInsets.only(
+                                left: 20.0, right: 20.0, bottom: 10.0),
+                            width: MediaQuery.of(context).size.width,
+                            height: 100.0,
+                            decoration: BoxDecoration(
+                                color: Colors.grey[850],
+                                border:
+                                    Border.all(color: Colors.green, width: 1.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            child: Column(
                               children: <Widget>[
-                                GestureDetector(
-                                  onTap: () => {print('Clicked')},
-                                  child: Container(
-                                      margin: EdgeInsets.only(
-                                          top: 10.0, left: 10.0, right: 10.0),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blueGrey[900],
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Color.fromRGBO(0, 0, 0, 1)
-                                                  .withOpacity(0.5),
-                                              spreadRadius: 2,
-                                              blurRadius: 4),
-                                        ],
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(20.0),
-                                        ),
-                                      ),
-                                      width: MediaQuery.of(context).size.width -
-                                          30,
-                                      height: 100.0,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Row(
-                                            children: <Widget>[
-                                              Container(
-                                                margin: EdgeInsets.only(
-                                                    top: 15.0,
-                                                    left: 10.0,
-                                                    bottom: 5.0),
-                                                alignment: Alignment.center,
-                                                width: 80.0,
-                                                height: 55.0,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.grey,
-                                                  // image: new DecorationImage(
-                                                  //   fit: BoxFit.contain,
-                                                  //   image: new NetworkImage(
-                                                  //     profilePic,
-                                                  //   ),
-                                                  // ),
-                                                ),
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        top: 15.0, left: 15.0),
-                                                    child: Text(
-                                                      'APPL',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 25.0,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 15.0),
-                                                    child: Container(
-                                                      child: Text(
-                                                        'BUY' + ' @ ' + '140',
-                                                        style: TextStyle(
-                                                            fontSize: 20.0,
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Expanded(child: SizedBox()),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    top: 15.0, right: 20.0),
-                                                child: Icon(
-                                                  Icons.trending_up_rounded,
-                                                  color: Colors.green,
-                                                  size: 55.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(
-                                                left: 10.0, right: 20.0),
-                                            alignment: Alignment.bottomRight,
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  '@Bambalow28',
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 10.0),
-                                                ),
-                                                Icon(
-                                                  Icons.check_circle,
-                                                  size: 10.0,
-                                                  color: Colors.blue,
-                                                ),
-                                                Expanded(
-                                                  child: SizedBox(),
-                                                ),
-                                                Container(
-                                                  padding: EdgeInsets.only(
-                                                      left: 10.0),
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  child: Text(
-                                                    '10:00AM',
-                                                    style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: 10.0),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      )),
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 10.0, left: 10.0),
+                                        child: Text(
+                                          'APPL',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 24.0),
+                                        )),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 10.0, right: 20.0),
+                                        child: Text(
+                                          'BUY',
+                                          style: TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0),
+                                        )),
+                                  ],
                                 ),
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 5.0, left: 10.0),
+                                        child: Text(
+                                          'BUY @ \$179.60',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16.0),
+                                        )),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    )
+                                  ],
+                                ),
+                                Expanded(
+                                  child: SizedBox(),
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 10.0, bottom: 5.0),
+                                      child: Text(
+                                        '@Bambalow28',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12.0),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          right: 10.0, bottom: 5.0),
+                                      child: Text(
+                                        '1/1/2022 10:40PM',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12.0),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                            ),
+                          );
+                        }))
               ],
             )));
   }

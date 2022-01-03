@@ -18,7 +18,9 @@ class _postSignal extends State<postSignal> {
   String signal = '';
   String signalMessage = 'Send Signal';
 
+  bool publicPost = false;
   bool privatePost = false;
+  late String postStatus;
 
   DateTime timeNow = DateTime.now();
   DateFormat formatter = DateFormat.yMd().add_jm();
@@ -225,9 +227,9 @@ class _postSignal extends State<postSignal> {
                               child: GestureDetector(
                             onTap: () {
                               setState(() {
-                                privatePost = false;
-
                                 if (privatePost = true) {
+                                  publicPost = true;
+                                  postStatus = 'Public';
                                   privatePost = false;
                                 }
                               });
@@ -235,7 +237,9 @@ class _postSignal extends State<postSignal> {
                             child: Text(
                               'Public',
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 16.0),
+                                  color:
+                                      publicPost ? Colors.blue : Colors.white,
+                                  fontSize: 16.0),
                               textAlign: TextAlign.center,
                             ),
                           )),
@@ -249,15 +253,19 @@ class _postSignal extends State<postSignal> {
                               setState(() {
                                 privatePost = true;
 
-                                if (privatePost = false) {
+                                if (publicPost = true) {
                                   privatePost = true;
+                                  postStatus = 'Private';
+                                  publicPost = false;
                                 }
                               });
                             },
                             child: Text(
                               'Private',
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 16.0),
+                                  color:
+                                      privatePost ? Colors.blue : Colors.white,
+                                  fontSize: 16.0),
                               textAlign: TextAlign.center,
                             ),
                           )),
@@ -339,7 +347,15 @@ class _postSignal extends State<postSignal> {
                                                         tickerInfo[index]
                                                             ['signal'],
                                                         style: TextStyle(
-                                                            color: Colors.green,
+                                                            color: tickerInfo[
+                                                                            index]
+                                                                        [
+                                                                        'signal'] ==
+                                                                    'BUY'
+                                                                ? Colors
+                                                                    .green[300]
+                                                                : Colors
+                                                                    .red[300],
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             fontSize: 20.0),
@@ -414,6 +430,7 @@ class _postSignal extends State<postSignal> {
                           "tickerSymbol": tickerSymbol.text,
                           "signalPost": signalPost.text,
                           "signal": signal,
+                          "postStatus": postStatus,
                           "timePosted": timeNow
                         }).then((value) => Timer(Duration(seconds: 1), () {
                                   setState(() {
