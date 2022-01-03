@@ -14,7 +14,6 @@ class postSignal extends StatefulWidget {
 class _postSignal extends State<postSignal> {
   String appBarTitle = "Post Signal";
   bool buy = false;
-  bool addMore = false;
   bool sell = false;
   String signal = '';
   String signalMessage = 'Send Signal';
@@ -37,18 +36,19 @@ class _postSignal extends State<postSignal> {
   int signalNum = 0;
   List tickerInfo = [];
 
-  getUserSignals() async {
-    await firestoreInstance
+  signalData() async {
+    var check = await firestoreInstance
         .collection('posts')
         .doc('public')
         .collection(userId)
-        .get()
-        .then((value) => value.docs.map((signalData) => {
-              setState(() {
-                tickerInfo.add(signalData);
-                signalNum = tickerInfo.length;
-              })
-            }));
+        .get();
+
+    setState(() {
+      check.docs
+          .map((e) => {signalNum = e.data().length, tickerInfo.add(e.data())});
+    });
+
+    print(check.docs.map((e) => {tickerInfo.add(e.data())}));
   }
 
   @override
@@ -56,7 +56,7 @@ class _postSignal extends State<postSignal> {
     super.initState();
     User user = auth.currentUser!;
     userId = user.uid;
-    getUserSignals();
+    signalData();
   }
 
   @override
@@ -146,8 +146,6 @@ class _postSignal extends State<postSignal> {
                                   buy = true;
                                   signal = 'BUY';
                                 }
-
-                                addMore = false;
                                 sell = false;
                               })
                             },
@@ -156,12 +154,11 @@ class _postSignal extends State<postSignal> {
                                     top: 15.0, left: 10.0, right: 5.0),
                                 height: 50.0,
                                 decoration: BoxDecoration(
-                                    color: Colors.green[300],
+                                    color: buy
+                                        ? Colors.green[300]
+                                        : Colors.grey[850],
                                     border: Border.all(
-                                        color: buy
-                                            ? Colors.blue
-                                            : Colors.transparent,
-                                        width: 2.0),
+                                        color: Colors.green[300]!, width: 1.0),
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(10.0))),
                                 child: Align(
@@ -179,50 +176,12 @@ class _postSignal extends State<postSignal> {
                           child: GestureDetector(
                             onTap: () => {
                               setState(() {
-                                if (addMore != true) {
-                                  addMore = true;
-                                  signal = 'ADD MORE';
-                                }
-
-                                buy = false;
-                                sell = false;
-                              })
-                            },
-                            child: Container(
-                                margin: EdgeInsets.only(
-                                    top: 15.0, left: 5.0, right: 5.0),
-                                height: 50.0,
-                                decoration: BoxDecoration(
-                                    color: Colors.orange[300],
-                                    border: Border.all(
-                                        color: addMore
-                                            ? Colors.blue
-                                            : Colors.transparent,
-                                        width: 2.0),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'ADD MORE',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => {
-                              setState(() {
                                 if (sell != true) {
                                   sell = true;
                                   signal = 'SELL';
                                 }
 
                                 buy = false;
-                                addMore = false;
                               }),
                             },
                             child: Container(
@@ -230,12 +189,11 @@ class _postSignal extends State<postSignal> {
                                     top: 15.0, right: 10.0, left: 10.0),
                                 height: 50.0,
                                 decoration: BoxDecoration(
-                                    color: Colors.red[300],
+                                    color: sell
+                                        ? Colors.red[300]
+                                        : Colors.grey[850],
                                     border: Border.all(
-                                        color: sell
-                                            ? Colors.blue
-                                            : Colors.transparent,
-                                        width: 2.0),
+                                        color: Colors.red[300]!, width: 1.0),
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(10.0))),
                                 child: Align(
@@ -329,7 +287,7 @@ class _postSignal extends State<postSignal> {
                               ),
                               Expanded(
                                   child: ListView.builder(
-                                      itemCount: signalNum,
+                                      itemCount: tickerInfo.length,
                                       scrollDirection: Axis.vertical,
                                       itemBuilder:
                                           (BuildContext context, int index) {
@@ -468,7 +426,9 @@ class _postSignal extends State<postSignal> {
                               top: 15.0, right: 20.0, left: 20.0, bottom: 40.0),
                           height: 50.0,
                           decoration: BoxDecoration(
-                              color: Colors.green[400],
+                              color: Colors.green[700],
+                              border:
+                                  Border.all(color: Colors.green, width: 1.0),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(30.0))),
                           child: Align(
