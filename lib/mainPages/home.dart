@@ -53,24 +53,6 @@ class _MainPage extends State<MainPage> {
     });
   }
 
-  Route goToHomePage() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => MainPage(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return child;
-      },
-    );
-  }
-
-  Route goToVerifiedHome() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => VerifiedHome(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return child;
-      },
-    );
-  }
-
   getUserLoginState() async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // var status = prefs.getBool('isLoggedIn');
@@ -87,10 +69,17 @@ class _MainPage extends State<MainPage> {
     setState(() {
       userChecking = check.data()!['verified'];
       if (userChecking == true) {
-        goToVerifiedHome();
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => VerifiedHome(),
+            transitionDuration: Duration.zero,
+          ),
+        );
         print('Verified');
       } else if (userChecking == false) {
-        goToHomePage();
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MainPage()));
         print('Not Verified');
       } else {
         print('Oops! Something Went Wrong!');
@@ -147,16 +136,14 @@ class _MainPage extends State<MainPage> {
 
     if (marketTime == 'open') {
       print("Market is Open");
-      setState(() {
-        marketStatus = "Market Open";
-        marketStatusCheck = true;
-      });
+
+      marketStatus = "Market Open";
+      marketStatusCheck = true;
     } else {
       print("Market is Closed");
-      setState(() {
-        marketStatus = "Market Closed";
-        marketStatusCheck = false;
-      });
+
+      marketStatus = "Market Closed";
+      marketStatusCheck = false;
     }
   }
 
@@ -165,6 +152,10 @@ class _MainPage extends State<MainPage> {
     getUserLoginState();
     marketHours();
     getDataFromFirebase();
+  }
+
+  void dispose() {
+    super.dispose();
   }
 
   @override
