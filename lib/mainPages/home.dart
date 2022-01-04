@@ -78,8 +78,13 @@ class _MainPage extends State<MainPage> {
         );
         print('Verified');
       } else if (userChecking == false) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MainPage()));
+        // Navigator.pushReplacement(
+        //   context,
+        //   PageRouteBuilder(
+        //     pageBuilder: (context, animation1, animation2) => MainPage(),
+        //     transitionDuration: Duration.zero,
+        //   ),
+        // );
         print('Not Verified');
       } else {
         print('Oops! Something Went Wrong!');
@@ -134,17 +139,19 @@ class _MainPage extends State<MainPage> {
     var jsonResponse = convert.jsonDecode(res.body);
     var marketTime = jsonResponse['market'];
 
-    if (marketTime == 'open') {
-      print("Market is Open");
+    setState(() {
+      if (marketTime == 'open') {
+        print("Market is Open");
 
-      marketStatus = "Market Open";
-      marketStatusCheck = true;
-    } else {
-      print("Market is Closed");
+        marketStatus = "Market Open";
+        marketStatusCheck = true;
+      } else {
+        print("Market is Closed");
 
-      marketStatus = "Market Closed";
-      marketStatusCheck = false;
-    }
+        marketStatus = "Market Closed";
+        marketStatusCheck = false;
+      }
+    });
   }
 
   void initState() {
