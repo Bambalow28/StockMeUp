@@ -320,7 +320,7 @@ class _VerifiedHome extends State<VerifiedHome> {
         floatingActionButton: FloatingActionButton(
           elevation: 5.0,
           child: Icon(Icons.create_rounded),
-          backgroundColor: Colors.green[300],
+          backgroundColor: Colors.blue[300],
           onPressed: () {
             Navigator.of(context).push(postSignalRoute());
           },

@@ -139,19 +139,22 @@ class _MainPage extends State<MainPage> {
     var jsonResponse = convert.jsonDecode(res.body);
     var marketTime = jsonResponse['market'];
 
-    setState(() {
-      if (marketTime == 'open') {
-        print("Market is Open");
+    //Check whether setState is already mounted
+    if (mounted) {
+      setState(() {
+        if (marketTime == 'open') {
+          print("Market is Open");
 
-        marketStatus = "Market Open";
-        marketStatusCheck = true;
-      } else {
-        print("Market is Closed");
+          marketStatus = "Market Open";
+          marketStatusCheck = true;
+        } else {
+          print("Market is Closed");
 
-        marketStatus = "Market Closed";
-        marketStatusCheck = false;
-      }
-    });
+          marketStatus = "Market Closed";
+          marketStatusCheck = false;
+        }
+      });
+    }
   }
 
   void initState() {

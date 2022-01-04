@@ -234,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
                                 BorderRadius.all(Radius.circular(20.0))),
                         focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                                color: Colors.green, width: 1.0),
+                                color: Colors.blue, width: 1.0),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                       ),
@@ -274,7 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                                 BorderRadius.all(Radius.circular(20.0))),
                         focusedBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.green, width: 1.0),
+                                BorderSide(color: Colors.blue, width: 1.0),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                       ),

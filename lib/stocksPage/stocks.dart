@@ -696,38 +696,119 @@ class _StockPage extends State<StockPage> {
                                                     BorderRadius.circular(15),
                                               ),
                                               child: ExpansionTile(
+                                                trailing: Icon(
+                                                  Icons.trending_up_rounded,
+                                                  color: Colors.green,
+                                                ),
                                                 iconColor: Colors.white,
                                                 title: Text(
                                                     watchlistNames[index],
                                                     style: TextStyle(
-                                                        color: Colors.white)),
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
                                                 children: <Widget>[
-                                                  Column(
-                                                    children: <Widget>[
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: 10.0,
-                                                            right: 10.0),
-                                                        child: ListView.builder(
-                                                            itemCount: 2,
-                                                            scrollDirection:
-                                                                Axis.vertical,
-                                                            itemBuilder:
-                                                                (BuildContext
-                                                                        context,
-                                                                    int index) {
-                                                              return Container(
-                                                                child: Text(
-                                                                  'APPL',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              );
-                                                            }),
-                                                      )
-                                                    ],
-                                                  )
+                                                  Container(
+                                                      margin: EdgeInsets.only(
+                                                        left: 10.0,
+                                                        right: 10.0,
+                                                      ),
+                                                      child: ListView.builder(
+                                                        itemCount: 2,
+                                                        shrinkWrap: true,
+                                                        scrollDirection:
+                                                            Axis.vertical,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          10.0),
+                                                              child: Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Text(
+                                                                    'APPL',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            20.0),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child:
+                                                                        SizedBox(),
+                                                                  ),
+                                                                  Column(
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Text(
+                                                                        'Holdings',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.grey,
+                                                                            fontSize: 10.0),
+                                                                      ),
+                                                                      Text(
+                                                                        '5',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontSize: 14.0),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10.0,
+                                                                  ),
+                                                                  Column(
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Text(
+                                                                        'Avg Cost Price',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.grey,
+                                                                            fontSize: 10.0),
+                                                                      ),
+                                                                      Text(
+                                                                        '\$110.30',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontSize: 14.0),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10.0,
+                                                                  ),
+                                                                  Column(
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Text(
+                                                                        'Price',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.grey,
+                                                                            fontSize: 10.0),
+                                                                      ),
+                                                                      Text(
+                                                                        '\$179.50',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.red,
+                                                                            fontSize: 14.0),
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ));
+                                                        },
+                                                      ))
                                                 ],
                                               ),
                                             ),
