@@ -22,6 +22,7 @@ class _ProfilePage extends State<ProfilePage> {
 
   bool userVerified = false;
   var userId;
+  var displayName;
   var getEmail;
 
   //Responsible for the Bottom Navigation Bar
@@ -60,6 +61,7 @@ class _ProfilePage extends State<ProfilePage> {
     setState(() {
       userId = user.uid;
       getEmail = auth.currentUser!.email;
+      displayName = user.displayName;
 
       firestoreInstance
           .collection('users')
@@ -199,7 +201,7 @@ class _ProfilePage extends State<ProfilePage> {
                         fit: BoxFit.fitWidth,
                         child: Column(
                           children: <Widget>[
-                            Text('Joshua Alanis',
+                            Text(displayName,
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30.0,
@@ -334,7 +336,8 @@ class _ProfilePage extends State<ProfilePage> {
                       width: MediaQuery.of(context).size.width - 30,
                       height: MediaQuery.of(context).size.height,
                       decoration: BoxDecoration(
-                          color: Colors.grey[800],
+                          color: Colors.grey[850],
+                          border: Border.all(color: Colors.grey, width: 1.0),
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0))),
                       child: Column(
@@ -345,7 +348,7 @@ class _ProfilePage extends State<ProfilePage> {
                                   padding:
                                       EdgeInsets.only(top: 10.0, left: 10.0),
                                   child: Text(
-                                    'Stock Overview',
+                                    'Stock Portfolio',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20.0),
                                   )),
