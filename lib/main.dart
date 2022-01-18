@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:newrandomproject/signupPage/signup.dart';
 
 void main() {
   runApp(MyApp());
@@ -142,37 +143,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signUpVerify() async {
-    try {
-      await auth.createUserWithEmailAndPassword(
-          email: emailAddress.text, password: password.text);
-      final User user = auth.currentUser!;
-      final userId = user.uid;
-      setState(() {
-        loginCheck = false;
-        firestoreInstance.collection('users').doc(userId).set({
-          'email': emailAddress.text,
-          'verified': false
-        }).then((verifyCheck) => {
-              loginMessage = 'Account Successfully Created',
-              Future.delayed(Duration(seconds: 1), () => {goToHomePage()}),
-              userLoggedIn()
-            });
-      });
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        setState(() {
-          loginCheck = true;
-          loginMessage = 'Weak Password';
-        });
-      } else if (e.code == 'email-already-in-use') {
-        setState(() {
-          loginCheck = true;
-          loginMessage = 'Email Already In-Use';
-        });
-      }
-    } catch (e) {
-      print(e);
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignUpPage()),
+    );
+    //
   }
 
   @override
@@ -325,47 +300,26 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                       onTap: () async {
-                        setState(() {
-                          signUpLoading = true;
-                        });
-                        await Future.delayed(const Duration(seconds: 1));
-                        setState(() {
-                          signUpVerify();
-                          signUpLoading = false;
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignUpPage()),
+                        );
                       },
-                      child: signUpLoading
-                          ? Container(
-                              width: 50.0,
-                              height: 50.0,
-                              decoration: BoxDecoration(
-                                  color: Colors.green[300],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.0))),
-                              child: SizedBox(
-                                height: 100.0,
-                                width: 100.0,
-                                child: Center(
-                                    child: CircularProgressIndicator(
-                                        color: Colors.white, strokeWidth: 2.0)),
-                              ))
-                          : Container(
-                              width: 270.0,
-                              height: 45.0,
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[850],
-                                  border: Border.all(
-                                      color: Colors.green, width: 1.0),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.0))),
-                              child: Text(
-                                "Sign Up",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20.0),
-                              ),
-                            )),
+                      child: Container(
+                        width: 270.0,
+                        height: 45.0,
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                            color: Colors.grey[850],
+                            border: Border.all(color: Colors.green, width: 1.0),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30.0))),
+                        child: Text(
+                          "Sign Up",
+                          style: TextStyle(color: Colors.white, fontSize: 20.0),
+                        ),
+                      )),
                   Padding(
                       padding: EdgeInsets.only(top: 20.0),
                       child: Text(
