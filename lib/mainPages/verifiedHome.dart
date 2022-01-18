@@ -21,9 +21,49 @@ class _VerifiedHome extends State<VerifiedHome> {
   int timeMarketOpen = 0;
 
   //Texts for each signals
-  var signalCount = [];
+  List signalInfo = [];
+
+  bool signalVote = false;
+
+  //DateTime
+  DateTime timeNow = DateTime.now();
+  DateFormat formatter = DateFormat.yMd().add_jm();
+  String formattedDate = '';
 
   final firestoreInstance = FirebaseFirestore.instance;
+
+  //Convert Timestamp to Ago
+  String convertTime(DateTime timeInput) {
+    Duration diff = DateTime.now().difference(timeInput);
+
+    if (diff.inDays >= 1) {
+      if (diff.inDays == 1) {
+        return '${diff.inDays} Day ago';
+      } else {
+        return '${diff.inDays} Days ago';
+      }
+    } else if (diff.inHours >= 1) {
+      if (diff.inHours == 1) {
+        return '${diff.inHours} Hour ago';
+      } else {
+        return '${diff.inHours} Hours ago';
+      }
+    } else if (diff.inMinutes >= 1) {
+      if (diff.inMinutes == 1) {
+        return '${diff.inMinutes} Minute ago';
+      } else {
+        return '${diff.inMinutes} Minutes ago';
+      }
+    } else if (diff.inSeconds >= 1) {
+      if (diff.inSeconds == 1) {
+        return '${diff.inSeconds} Second ago';
+      } else {
+        return '${diff.inSeconds} Seconds ago';
+      }
+    } else {
+      return 'Just Now';
+    }
+  }
 
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
@@ -59,11 +99,30 @@ class _VerifiedHome extends State<VerifiedHome> {
 
   //Get all data stored in Firestore in Firebase
   getDataFromFirebase() async {
-    var check = await firestoreInstance
-        .collection("verifiedUsers")
-        .doc("Bambalow28")
-        .collection("signalPosts")
-        .get();
+    // await firestoreInstance
+    //     .collection("posts")
+    //     .get()
+    //     .then((value) => print(value.docs.map((data) => signalInfo.add(data))));
+    var getPosts = await firestoreInstance.collection('posts').get();
+
+    getPosts.docs.forEach((userIdentify) {
+      if (userIdentify['postStatus'] == 'Public') {
+        setState(() {
+          signalInfo.add(userIdentify.data());
+        });
+      } else if (userIdentify['postStatus'] == 'Private') {
+        return;
+      }
+    });
+
+    //     getPosts.docs.forEach((userIdentify) {
+    //   if (userIdentify['userID'] == userId) {
+    //     setState(() {
+    //       tickerInfo.add(userIdentify.data());
+    //       signalNum = tickerInfo.length;
+    //     });
+    //   }
+    // });
   }
 
   //Show Market Status (When it opens)
@@ -119,11 +178,17 @@ class _VerifiedHome extends State<VerifiedHome> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     getUserLoginState();
     marketHours();
     getDataFromFirebase();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -139,10 +204,17 @@ class _VerifiedHome extends State<VerifiedHome> {
             Padding(
               padding: EdgeInsets.only(right: 15.0),
               child: GestureDetector(
-                onTap: () => {print('Save Article')},
+                onTap: () => {print('Search Users')},
+                child: Icon(Icons.search),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: 15.0),
+              child: GestureDetector(
+                onTap: () => {print('Show Notifications')},
                 child: Icon(Icons.notifications_none_rounded),
               ),
-            )
+            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -222,98 +294,535 @@ class _VerifiedHome extends State<VerifiedHome> {
                     ),
                     Expanded(
                         child: ListView.builder(
-                            itemCount: 2,
+                            itemCount: signalInfo.length,
                             scrollDirection: Axis.vertical,
                             itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                margin: EdgeInsets.only(
-                                    left: 20.0, right: 20.0, bottom: 10.0),
-                                width: MediaQuery.of(context).size.width,
-                                height: 100.0,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[850],
-                                    border: Border.all(
-                                        color: Colors.green, width: 1.0),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                child: Column(
-                                  children: <Widget>[
-                                    Row(
+                              var formatDate = signalInfo[index]['timePosted'];
+                              var parsedDate = DateTime.parse(
+                                  formatDate.toDate().toString());
+
+                              formattedDate = formatter.format(parsedDate);
+                              var convertedTime = convertTime(parsedDate);
+
+                              return GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(20.0),
+                                                topRight:
+                                                    Radius.circular(20.0))),
+                                        backgroundColor: Colors.grey[850],
+                                        builder: (BuildContext context) {
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 20.0, bottom: 10.0),
+                                                child: Text(
+                                                  signalInfo[index]
+                                                      ['tickerSymbol'],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 32.0,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 10.0, bottom: 5.0),
+                                                child: Text(
+                                                  signalInfo[index]
+                                                      ['signalPost'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18.0,
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 20.0,
+                                                    left: 20.0,
+                                                    right: 20.0),
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 130.0,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey[800],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10.0)),
+                                                    border: Border.all(
+                                                        color: Colors.blue,
+                                                        width: 1.0)),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 10.0),
+                                                      child: Text(
+                                                        'Signal Status',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20.0,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10.0),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Expanded(
+                                                            child: Container(
+                                                                margin: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            20.0),
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            8.0),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                            .green[
+                                                                        800],
+                                                                    border: Border.all(
+                                                                        color: Colors
+                                                                            .green,
+                                                                        width:
+                                                                            1.0),
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(10.0))),
+                                                                child: Column(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Padding(
+                                                                      padding: EdgeInsets
+                                                                          .only(
+                                                                              top: 5.0),
+                                                                      child:
+                                                                          Text(
+                                                                        signalInfo[index]['goodSignal']
+                                                                            .toString(),
+                                                                        style: TextStyle(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                24.0,
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                      ),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: EdgeInsets
+                                                                          .only(
+                                                                              top: 10.0),
+                                                                      child:
+                                                                          Text(
+                                                                        'Good Signal',
+                                                                        style: TextStyle(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ))),
+                                                        SizedBox(width: 10.0),
+                                                        Expanded(
+                                                            child: Container(
+                                                                margin: EdgeInsets
+                                                                    .only(
+                                                                        right:
+                                                                            20.0),
+                                                                padding:
+                                                                    EdgeInsets.all(
+                                                                        8.0),
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                            .red[
+                                                                        800],
+                                                                    border: Border.all(
+                                                                        color: Colors
+                                                                            .red,
+                                                                        width:
+                                                                            1.0),
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(10.0))),
+                                                                child: Column(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Padding(
+                                                                      padding: EdgeInsets
+                                                                          .only(
+                                                                              top: 5.0),
+                                                                      child:
+                                                                          Text(
+                                                                        signalInfo[index]['badSignal']
+                                                                            .toString(),
+                                                                        style: TextStyle(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                24.0,
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                      ),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: EdgeInsets
+                                                                          .only(
+                                                                              top: 10.0),
+                                                                      child:
+                                                                          Text(
+                                                                        'Bad Signal',
+                                                                        style: TextStyle(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                )))
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        top: 5.0, left: 20.0),
+                                                    alignment: Alignment.center,
+                                                    height: 50.0,
+                                                    width: 30.0,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.grey[400],
+                                                      // image: new DecorationImage(
+                                                      //   fit: BoxFit.contain,
+                                                      //   image: new NetworkImage(
+                                                      //     profilePic,
+                                                      //   ),
+                                                      // ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5.0, left: 5.0),
+                                                    child: Text(
+                                                      signalInfo[index]['user'],
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14.0),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5.0, left: 2.0),
+                                                    child: Icon(
+                                                        Icons
+                                                            .check_circle_rounded,
+                                                        color: Colors.blue[300],
+                                                        size: 12.0),
+                                                  ),
+
+                                                  // Container(
+                                                  //   padding:
+                                                  //       EdgeInsets.only(
+                                                  //           left: 20.0,
+                                                  //           right: 20.0),
+                                                  //   alignment:
+                                                  //       Alignment.center,
+                                                  //   child: FittedBox(
+                                                  //       fit:
+                                                  //           BoxFit.fitWidth,
+                                                  //       child: Column(
+                                                  //         children: <
+                                                  //             Widget>[
+                                                  //           Row(
+                                                  //             children: <
+                                                  //                 Widget>[
+                                                  //               Text(
+                                                  //                   'Verified',
+                                                  //                   style: TextStyle(
+                                                  //                       color: Colors.cyan[
+                                                  //                           400],
+                                                  //                       fontSize:
+                                                  //                           8.0,
+                                                  //                       fontWeight:
+                                                  //                           FontWeight.bold))
+                                                  //             ],
+                                                  //           )
+                                                  //         ],
+                                                  //       )),
+                                                  // ),
+                                                  // Text(
+                                                  //   formattedDate,
+                                                  //   style: TextStyle(
+                                                  //       color: Colors.grey,
+                                                  //       fontSize: 8.0),
+                                                  // ),
+
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  )
+                                                ],
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                      child: GestureDetector(
+                                                          onTap: () async {
+                                                            setState(() {
+                                                              signalVote = true;
+                                                            });
+
+                                                            await firestoreInstance
+                                                                .collection(
+                                                                    "posts")
+                                                                .doc(signalInfo[
+                                                                        index]
+                                                                    ['postID'])
+                                                                .update({
+                                                              "goodSignal": FieldValue
+                                                                  .increment(
+                                                                      signalVote
+                                                                          ? (1)
+                                                                          : (-1))
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    left: 20.0),
+                                                            height: 50.0,
+                                                            decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .green[300],
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            30.0))),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: <
+                                                                  Widget>[
+                                                                Icon(
+                                                                    Icons
+                                                                        .trending_up_rounded,
+                                                                    color: Colors
+                                                                        .white),
+                                                                SizedBox(
+                                                                    width: 5.0),
+                                                                Text(
+                                                                  'Good Signal',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ))),
+                                                  SizedBox(width: 10.0),
+                                                  Expanded(
+                                                      child: GestureDetector(
+                                                          onTap: () async {
+                                                            setState(() {
+                                                              signalVote =
+                                                                  false;
+                                                            });
+
+                                                            await firestoreInstance
+                                                                .collection(
+                                                                    "posts")
+                                                                .doc(signalInfo[
+                                                                        index]
+                                                                    ['postID'])
+                                                                .update({
+                                                              "badSignal": FieldValue
+                                                                  .increment(
+                                                                      signalVote
+                                                                          ? (-1)
+                                                                          : (1))
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            height: 50.0,
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    right:
+                                                                        20.0),
+                                                            decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .red[300],
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            30.0))),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: <
+                                                                  Widget>[
+                                                                Icon(
+                                                                    Icons
+                                                                        .trending_down_rounded,
+                                                                    color: Colors
+                                                                        .white),
+                                                                SizedBox(
+                                                                    width: 5.0),
+                                                                Text(
+                                                                  'Bad Signal',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ))),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 40.0,
+                                              )
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        left: 20.0, right: 20.0, bottom: 10.0),
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 100.0,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey[850],
+                                        border: Border.all(
+                                            color: signalInfo[index]
+                                                        ['signal'] ==
+                                                    'BUY'
+                                                ? Colors.green
+                                                : Colors.red,
+                                            width: 1.0),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0))),
+                                    child: Column(
                                       children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 10.0, left: 10.0),
-                                            child: Text(
-                                              'APPL',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 24.0),
-                                            )),
+                                        Row(
+                                          children: <Widget>[
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 10.0, left: 10.0),
+                                                child: Text(
+                                                  signalInfo[index]
+                                                      ['tickerSymbol'],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 24.0),
+                                                )),
+                                            Expanded(
+                                              child: SizedBox(),
+                                            ),
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 10.0, right: 20.0),
+                                                child: Text(
+                                                  signalInfo[index]['signal'],
+                                                  style: TextStyle(
+                                                      color: signalInfo[index]
+                                                                  ['signal'] ==
+                                                              'BUY'
+                                                          ? Colors.green[300]
+                                                          : Colors.red[300],
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0),
+                                                )),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 5.0, left: 10.0),
+                                                child: Text(
+                                                  signalInfo[index]
+                                                      ['signalPost'],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16.0),
+                                                )),
+                                            Expanded(
+                                              child: SizedBox(),
+                                            )
+                                          ],
+                                        ),
                                         Expanded(
                                           child: SizedBox(),
                                         ),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 10.0, right: 20.0),
-                                            child: Text(
-                                              'BUY',
-                                              style: TextStyle(
-                                                  color: Colors.green,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20.0),
-                                            )),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 5.0, left: 10.0),
-                                            child: Text(
-                                              'BUY @ \$179.60',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16.0),
-                                            )),
-                                        Expanded(
-                                          child: SizedBox(),
+                                        Row(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 10.0, bottom: 5.0),
+                                              child: Text(
+                                                '@' + signalInfo[index]['user'],
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12.0),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: SizedBox(),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: 10.0, bottom: 5.0),
+                                              child: Text(
+                                                convertedTime,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12.0),
+                                              ),
+                                            ),
+                                          ],
                                         )
                                       ],
                                     ),
-                                    Expanded(
-                                      child: SizedBox(),
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 10.0, bottom: 5.0),
-                                          child: Text(
-                                            '@Bambalow28',
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12.0),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: SizedBox(),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              right: 10.0, bottom: 5.0),
-                                          child: Text(
-                                            '1/1/2022 10:40PM',
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12.0),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              );
+                                  ));
                             }))
                   ],
                 ))),
