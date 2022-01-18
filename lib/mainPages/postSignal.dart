@@ -34,23 +34,22 @@ class _postSignal extends State<postSignal> {
   final firestoreInstance = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
   var userId;
+  var displayName;
 
   int signalNum = 0;
   List tickerInfo = [];
 
   signalData() async {
-    var check = await firestoreInstance
-        .collection('posts')
-        .doc('public')
-        .collection(userId)
-        .get();
+    var getPosts = await firestoreInstance.collection('posts').get();
 
-    setState(() {
-      check.docs
-          .map((e) => {signalNum = e.data().length, tickerInfo.add(e.data())});
+    getPosts.docs.forEach((userIdentify) {
+      if (userIdentify['userID'] == userId) {
+        setState(() {
+          tickerInfo.add(userIdentify.data());
+          signalNum = tickerInfo.length;
+        });
+      }
     });
-
-    print(check.docs.map((e) => {tickerInfo.add(e.data())}));
   }
 
   @override
@@ -58,6 +57,7 @@ class _postSignal extends State<postSignal> {
     super.initState();
     User user = auth.currentUser!;
     userId = user.uid;
+    displayName = user.displayName;
     signalData();
   }
 
@@ -389,7 +389,8 @@ class _postSignal extends State<postSignal> {
                                                         left: 10.0,
                                                         bottom: 5.0),
                                                     child: Text(
-                                                      'Public',
+                                                      tickerInfo[index]
+                                                          ['postStatus'],
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 12.0),
@@ -420,23 +421,24 @@ class _postSignal extends State<postSignal> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        signalMessage = 'Posting...';
-                        firestoreInstance
-                            .collection("posts")
-                            .doc("public")
-                            .collection(userId)
-                            .doc(timeNow.toString())
-                            .set({
+                        DocumentReference makeDoc =
+                            firestoreInstance.collection("posts").doc();
+                        makeDoc.set({
                           "tickerSymbol": tickerSymbol.text,
                           "signalPost": signalPost.text,
                           "signal": signal,
                           "postStatus": postStatus,
-                          "timePosted": timeNow
+                          "timePosted": timeNow,
+                          "goodSignal": 0,
+                          "badSignal": 0,
+                          "postID": makeDoc.id,
+                          "user": displayName,
+                          "userID": userId
                         }).then((value) => Timer(Duration(seconds: 1), () {
-                                  setState(() {
-                                    signalMessage = "Successfully Posted";
-                                  });
-                                }));
+                              setState(() {
+                                signalMessage = "Successfully Posted";
+                              });
+                            }));
                       },
                       child: Container(
                           margin: EdgeInsets.only(
