@@ -23,6 +23,7 @@ class _StockPage extends State<StockPage> {
   List getStockNames = [];
   List getStockPrice = [];
   TextEditingController watchlistName = new TextEditingController();
+  TextEditingController addStockName = new TextEditingController();
 
   late User user;
   late var userId;
@@ -88,7 +89,7 @@ class _StockPage extends State<StockPage> {
       }
     } else if (diff.inMinutes >= 1) {
       if (diff.inMinutes == 1) {
-        return '${diff.inMinutes} Minutes ago';
+        return '${diff.inMinutes} Minute ago';
       } else {
         return '${diff.inMinutes} Minutes ago';
       }
@@ -104,26 +105,27 @@ class _StockPage extends State<StockPage> {
   }
 
   getWatchlists() async {
-    // await firestoreInstance
+    // var check = await firestoreInstance
     //     .collection('users')
     //     .doc(userId)
-    //     .collection("watchlists")
-    //     .get()
-    //     .then((value) => value.docs
-    //         .map((DocumentSnapshot documentSnapshot) =>
-    //             {watchlistNames.add(documentSnapshot.id)})
-    //         .toList());
-    firestoreInstance
+    //     .collection('watchlists')
+    //     .get();
+
+    // setState(() {
+    //   check.docs
+    //       .map((e) => {signalNum = e.data().length, tickerInfo.add(e.data())});
+    // });
+
+    // print(check.docs.map((e) => {tickerInfo.add(e.data())}));
+    var getWatchlist = await firestoreInstance
         .collection('users')
         .doc(userId)
         .collection("watchlists")
-        .snapshots()
-        .listen((value) {
+        .get();
+
+    getWatchlist.docs.forEach((watchList) {
       setState(() {
-        value.docs
-            .map((DocumentSnapshot documentSnapshot) =>
-                {watchlistNames.add(documentSnapshot.id)})
-            .toList();
+        watchlistNames.add(watchList.id);
       });
     });
   }
@@ -148,29 +150,54 @@ class _StockPage extends State<StockPage> {
         stockNames = element['quotes'];
         stockNames.forEach((symbol) {
           getStockNames.add(symbol['symbol']);
-          getTrendingStocksInfo(symbol['symbol']);
+          // getTrendingStocksInfo(symbol['symbol']);
         });
       });
     });
   }
 
+  // //Get Information about trending stocks
+  // getTrendingStocksInfo(String ticker) async {
+  //   var yfinance = Uri.parse(
+  //       'https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=$ticker');
+
+  //   Map<String, String> headers = {
+  //     'Content-type': 'application/json',
+  //     'Accept': 'application/json',
+  //     'x-api-key': 'vcsOn5TuqZ5vQKg71lSFdaYSylw4k06O9UCCBju9'
+  //   };
+  //   var res = await http.get(yfinance, headers: headers);
+
+  //   var jsonResp = convert.jsonDecode(res.body);
+  //   setState(() {
+  //     List stockInfo = [];
+  //     stockInfo = jsonResp['quoteResponse']['result'];
+  //     getStockPrice.add(stockInfo[0]['postMarketPrice']);
+  //   });
+  // }
+
   //Get Information about trending stocks
-  getTrendingStocksInfo(String ticker) async {
+  test() async {
     var yfinance = Uri.parse(
-        'https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=$ticker');
+        'https://api.polygon.io/v1/meta/symbols/APPL/company?apiKey=KoqKkSeNoEgp2qToI4l3mfyE0PmEriOf');
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
-      'x-api-key': 'vcsOn5TuqZ5vQKg71lSFdaYSylw4k06O9UCCBju9'
+      'x-api-key': 'KoqKkSeNoEgp2qToI4l3mfyE0PmEriOf'
     };
     var res = await http.get(yfinance, headers: headers);
 
     var jsonResp = convert.jsonDecode(res.body);
     setState(() {
       List stockInfo = [];
-      stockInfo = jsonResp['quoteResponse']['result'];
-      getStockPrice.add(stockInfo[0]['postMarketPrice']);
+      print(jsonResp);
+      // fullStockName = stockInfo[0]['symbol'];
+      // fiftyTwoWeekRange = '123';
+      // marketCap = 123;
+      // formattedMarketCap =
+      //     NumberFormat.compactCurrency(decimalDigits: 1, symbol: '\$')
+      //         .format(marketCap);
     });
   }
 
@@ -198,6 +225,7 @@ class _StockPage extends State<StockPage> {
     super.initState();
     getUserInfo();
     // getTrendingStocks();
+    test();
     getNews();
     getWatchlists();
   }
@@ -396,183 +424,99 @@ class _StockPage extends State<StockPage> {
                               ),
                             ],
                           )),
-                      Container(
-                        margin:
-                            EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
-                        width: MediaQuery.of(context).size.width - 20,
-                        height: 200.0,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[850],
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                  padding:
-                                      EdgeInsets.only(left: 15.0, top: 5.0),
-                                  child: Text(
-                                    'Watchlist',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 25.0,
-                                        fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: () {
+                          print('Open Watchlist page');
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 20.0, left: 10.0, right: 10.0),
+                          width: MediaQuery.of(context).size.width - 20,
+                          height: 200.0,
+                          decoration: BoxDecoration(
+                              color: Colors.grey[850],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                    padding:
+                                        EdgeInsets.only(left: 15.0, top: 5.0),
+                                    child: Text(
+                                      'Watchlist',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Container(
-                                  padding:
-                                      EdgeInsets.only(right: 10.0, top: 5.0),
-                                  child: IconButton(
-                                    icon: Icon(Icons.add_circle_outline_rounded,
-                                        color: Colors.blue[300]),
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                          backgroundColor: Colors.grey[900],
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft:
-                                                      Radius.circular(30.0),
-                                                  topRight:
-                                                      Radius.circular(30.0))),
-                                          context: context,
-                                          builder: (context) => Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 20.0,
-                                                                left: 15.0),
-                                                        child: Text(
-                                                          'Add a Watchlist',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 24.0,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                            top: 10.0,
-                                                            left: 10.0,
-                                                            bottom: 5.0),
-                                                        width: 300.0,
-                                                        child: TextField(
-                                                          controller:
-                                                              watchlistName,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            filled: true,
-                                                            isDense: true,
-                                                            fillColor: Colors
-                                                                .grey[850],
-                                                            hintText:
-                                                                'Enter Watchlist Name',
-                                                            hintStyle: TextStyle(
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.only(right: 10.0, top: 5.0),
+                                    child: IconButton(
+                                      icon: Icon(
+                                          Icons.add_circle_outline_rounded,
+                                          color: Colors.blue[300]),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            backgroundColor: Colors.grey[900],
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(30.0),
+                                                    topRight:
+                                                        Radius.circular(30.0))),
+                                            context: context,
+                                            builder: (context) => Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 20.0,
+                                                                  left: 15.0),
+                                                          child: Text(
+                                                            'Add a Watchlist',
+                                                            style: TextStyle(
                                                                 color: Colors
-                                                                    .grey),
-                                                            enabledBorder: OutlineInputBorder(
-                                                                borderSide:
-                                                                    const BorderSide(
-                                                                        color: Colors
-                                                                            .grey,
-                                                                        width:
-                                                                            1.0),
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10.0))),
-                                                            focusedBorder: OutlineInputBorder(
-                                                                borderSide:
-                                                                    const BorderSide(
-                                                                        color: Colors
-                                                                            .grey,
-                                                                        width:
-                                                                            1.0),
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10.0))),
+                                                                    .white,
+                                                                fontSize: 24.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
                                                           ),
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: SizedBox(),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 10.0,
-                                                          bottom: 10.0),
-                                                      child: Text(
-                                                        'Add Stocks',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 24.0,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      )),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width -
-                                                            20,
-                                                    height: 230.0,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.grey[850],
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    20.0))),
-                                                    child: Column(
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Row(
                                                       children: <Widget>[
                                                         Container(
                                                           margin:
                                                               EdgeInsets.only(
-                                                                  top: 20.0,
-                                                                  left: 20.0,
-                                                                  right: 20.0,
-                                                                  bottom: 10.0),
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
+                                                                  top: 10.0,
+                                                                  left: 10.0,
+                                                                  bottom: 5.0),
+                                                          width: 300.0,
                                                           child: TextField(
                                                             controller:
                                                                 watchlistName,
                                                             decoration:
                                                                 InputDecoration(
-                                                              isDense: true,
                                                               filled: true,
+                                                              isDense: true,
                                                               fillColor: Colors
                                                                   .grey[850],
                                                               hintText:
-                                                                  'Search',
-                                                              suffixIcon: Icon(
-                                                                Icons.search,
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
+                                                                  'Enter Watchlist Name',
                                                               hintStyle: TextStyle(
                                                                   color: Colors
                                                                       .grey),
@@ -602,219 +546,305 @@ class _StockPage extends State<StockPage> {
                                                                     .white),
                                                           ),
                                                         ),
+                                                        Expanded(
+                                                          child: SizedBox(),
+                                                        )
                                                       ],
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    child: SizedBox(),
-                                                  ),
-                                                  GestureDetector(
-                                                      onTap: () {
-                                                        try {
-                                                          setState(() {
-                                                            firestoreInstance
-                                                                .collection(
-                                                                    'users')
-                                                                .doc(userId)
-                                                                .collection(
-                                                                    'watchlists')
-                                                                .doc(
-                                                                    watchlistName
-                                                                        .text)
-                                                                .set({
-                                                              "high": 'test'
-                                                            });
-                                                          });
-                                                        } catch (e) {
-                                                          print(e);
-                                                        }
-                                                      },
-                                                      child: Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  bottom: 20.0),
-                                                          width: 200.0,
-                                                          height: 40.0,
-                                                          decoration: BoxDecoration(
-                                                              color: Colors
-                                                                  .green[300],
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          30.0))),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: <Widget>[
-                                                              Text(
-                                                                'Create Watchlist',
-                                                                style:
-                                                                    TextStyle(
+                                                    Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 10.0,
+                                                                bottom: 10.0),
+                                                        child: Text(
+                                                          'Add Stocks',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 24.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        )),
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width -
+                                                              20,
+                                                      height: 230.0,
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Colors.grey[850],
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      20.0))),
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 20.0,
+                                                                    left: 20.0,
+                                                                    right: 20.0,
+                                                                    bottom:
+                                                                        10.0),
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: TextField(
+                                                              controller:
+                                                                  addStockName,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                isDense: true,
+                                                                filled: true,
+                                                                fillColor:
+                                                                    Colors.grey[
+                                                                        850],
+                                                                hintText:
+                                                                    'Search',
+                                                                suffixIcon:
+                                                                    Icon(
+                                                                  Icons.search,
                                                                   color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      14.0,
+                                                                      .grey,
                                                                 ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ],
-                                                          )))
-                                                ],
-                                              )).whenComplete(
-                                          () => {watchlistName.clear()});
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Expanded(
-                                child: ListView.builder(
-                                    itemCount: watchlistNames.length,
-                                    scrollDirection: Axis.vertical,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Container(
-                                          margin: EdgeInsets.only(
-                                              left: 10.0, right: 10.0),
-                                          child: Theme(
-                                            data: Theme.of(context).copyWith(
-                                                unselectedWidgetColor:
-                                                    Colors.white),
-                                            child: Card(
-                                              color: Colors.grey[800],
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1),
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                              ),
-                                              child: ExpansionTile(
-                                                trailing: Icon(
-                                                  Icons.trending_up_rounded,
-                                                  color: Colors.green,
-                                                ),
-                                                iconColor: Colors.white,
-                                                title: Text(
-                                                    watchlistNames[index],
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                children: <Widget>[
-                                                  Container(
-                                                      margin: EdgeInsets.only(
-                                                        left: 10.0,
-                                                        right: 10.0,
-                                                      ),
-                                                      child: ListView.builder(
-                                                        itemCount: 2,
-                                                        shrinkWrap: true,
-                                                        scrollDirection:
-                                                            Axis.vertical,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      bottom:
-                                                                          10.0),
-                                                              child: Row(
-                                                                children: <
-                                                                    Widget>[
-                                                                  Text(
-                                                                    'APPL',
-                                                                    style: TextStyle(
+                                                                hintStyle: TextStyle(
+                                                                    color: Colors
+                                                                        .grey),
+                                                                enabledBorder: OutlineInputBorder(
+                                                                    borderSide: const BorderSide(
                                                                         color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            20.0),
-                                                                  ),
-                                                                  Expanded(
-                                                                    child:
-                                                                        SizedBox(),
-                                                                  ),
-                                                                  Column(
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                        'Holdings',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.grey,
-                                                                            fontSize: 10.0),
-                                                                      ),
-                                                                      Text(
-                                                                        '5',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize: 14.0),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 10.0,
-                                                                  ),
-                                                                  Column(
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                        'Avg Cost Price',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.grey,
-                                                                            fontSize: 10.0),
-                                                                      ),
-                                                                      Text(
-                                                                        '\$110.30',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize: 14.0),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 10.0,
-                                                                  ),
-                                                                  Column(
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                        'Price',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.grey,
-                                                                            fontSize: 10.0),
-                                                                      ),
-                                                                      Text(
-                                                                        '\$179.50',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.red,
-                                                                            fontSize: 14.0),
-                                                                      )
-                                                                    ],
-                                                                  )
-                                                                ],
-                                                              ));
+                                                                            .grey,
+                                                                        width:
+                                                                            1.0),
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(10.0))),
+                                                                focusedBorder: OutlineInputBorder(
+                                                                    borderSide: const BorderSide(
+                                                                        color: Colors
+                                                                            .grey,
+                                                                        width:
+                                                                            1.0),
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(10.0))),
+                                                              ),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: SizedBox(),
+                                                    ),
+                                                    GestureDetector(
+                                                        onTap: () {
+                                                          try {
+                                                            setState(() {
+                                                              firestoreInstance
+                                                                  .collection(
+                                                                      'users')
+                                                                  .doc(userId)
+                                                                  .collection(
+                                                                      'watchlists')
+                                                                  .doc(
+                                                                      watchlistName
+                                                                          .text)
+                                                                  .set({
+                                                                "high": 'test'
+                                                              });
+                                                            });
+                                                          } catch (e) {
+                                                            print(e);
+                                                          }
                                                         },
-                                                      ))
-                                                ],
+                                                        child: Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    bottom:
+                                                                        25.0),
+                                                            width: 200.0,
+                                                            height: 40.0,
+                                                            decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .green[800],
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .green,
+                                                                    width: 1.0),
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            30.0))),
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: <
+                                                                  Widget>[
+                                                                Text(
+                                                                  'Create Watchlist',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14.0,
+                                                                  ),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                ),
+                                                              ],
+                                                            )))
+                                                  ],
+                                                )).whenComplete(
+                                            () => {watchlistName.clear()});
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                  child: ListView.builder(
+                                      itemCount: watchlistNames.length,
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Container(
+                                            margin: EdgeInsets.only(
+                                                left: 10.0, right: 10.0),
+                                            child: Theme(
+                                              data: Theme.of(context).copyWith(
+                                                  unselectedWidgetColor:
+                                                      Colors.white),
+                                              child: Card(
+                                                color: Colors.grey[800],
+                                                shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                                child: ExpansionTile(
+                                                  trailing: Icon(
+                                                    Icons.trending_up_rounded,
+                                                    color: Colors.green,
+                                                  ),
+                                                  iconColor: Colors.white,
+                                                  title: Text(
+                                                      watchlistNames[index],
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  children: <Widget>[
+                                                    Container(
+                                                        margin: EdgeInsets.only(
+                                                          left: 10.0,
+                                                          right: 10.0,
+                                                        ),
+                                                        child: ListView.builder(
+                                                          itemCount: 2,
+                                                          shrinkWrap: true,
+                                                          physics:
+                                                              NeverScrollableScrollPhysics(),
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                      context,
+                                                                  int index) {
+                                                            return Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        bottom:
+                                                                            10.0),
+                                                                child: Container(
+                                                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1.0), color: Colors.grey[850], borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                                                    child: Padding(
+                                                                        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+                                                                        child: Row(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            GestureDetector(
+                                                                              onTap: () {
+                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => StocksInfo(stockName: 'APPL')));
+                                                                              },
+                                                                              child: Text(
+                                                                                'APPL',
+                                                                                style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                                                              ),
+                                                                            ),
+                                                                            Expanded(
+                                                                              child: SizedBox(),
+                                                                            ),
+                                                                            Column(
+                                                                              children: <Widget>[
+                                                                                Text(
+                                                                                  'Holdings',
+                                                                                  style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                                                                ),
+                                                                                Text(
+                                                                                  '5',
+                                                                                  style: TextStyle(color: Colors.white, fontSize: 14.0),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 10.0,
+                                                                            ),
+                                                                            Column(
+                                                                              children: <Widget>[
+                                                                                Text(
+                                                                                  'Avg Cost Price',
+                                                                                  style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                                                                ),
+                                                                                Text(
+                                                                                  '\$110.30',
+                                                                                  style: TextStyle(color: Colors.white, fontSize: 14.0),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 10.0,
+                                                                            ),
+                                                                            Column(
+                                                                              children: <Widget>[
+                                                                                Text(
+                                                                                  'Price',
+                                                                                  style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                                                                ),
+                                                                                Text(
+                                                                                  '\$179.50',
+                                                                                  style: TextStyle(color: Colors.red, fontSize: 14.0),
+                                                                                )
+                                                                              ],
+                                                                            )
+                                                                          ],
+                                                                        ))));
+                                                          },
+                                                        ))
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ));
-                                    }))
-                          ],
+                                            ));
+                                      }))
+                            ],
+                          ),
                         ),
                       ),
                       Container(
@@ -830,15 +860,30 @@ class _StockPage extends State<StockPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              padding: EdgeInsets.only(left: 15.0, top: 10.0),
-                              child: Text(
-                                'News',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                                padding: EdgeInsets.only(left: 15.0, top: 10.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      'News',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          getNews();
+                                        },
+                                        icon: Icon(
+                                          Icons.refresh,
+                                          color: Colors.blue[300],
+                                          size: 20.0,
+                                        ))
+                                  ],
+                                )),
                             SizedBox(height: 10.0),
                             ListView.builder(
                                 scrollDirection: Axis.vertical,
