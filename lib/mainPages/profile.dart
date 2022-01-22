@@ -3,6 +3,7 @@ import 'package:newrandomproject/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 //View News Page Widget
 class ProfilePage extends StatefulWidget {
@@ -17,13 +18,16 @@ class _ProfilePage extends State<ProfilePage> {
 
   late FirebaseAuth auth;
   late final FirebaseFirestore firestoreInstance;
+  late FirebaseStorage firebaseStorage;
 
   TextEditingController applicationMessage = new TextEditingController();
 
   bool userVerified = false;
   var userId;
-  var displayName;
+  late var displayName;
   var getEmail;
+  var profilePicture;
+  bool profilePicCheck = false;
 
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
@@ -49,15 +53,19 @@ class _ProfilePage extends State<ProfilePage> {
 
   initiateConnection() {
     setState(() {
-      auth = FirebaseAuth.instance;
-      firestoreInstance = FirebaseFirestore.instance;
-      print('DB Initialized');
+      try {
+        auth = FirebaseAuth.instance;
+        firestoreInstance = FirebaseFirestore.instance;
+        firebaseStorage = FirebaseStorage.instance;
+        print('DB Initialized');
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
-  checkVerifyUser() async {
+  checkVerifyUser() {
     User user = auth.currentUser!;
-    late bool userCheck;
     setState(() {
       userId = user.uid;
       getEmail = auth.currentUser!.email;
@@ -99,6 +107,24 @@ class _ProfilePage extends State<ProfilePage> {
     super.initState();
     initiateConnection();
     checkVerifyUser();
+    getProfilePhoto();
+  }
+
+  //Get Profile Picture from Firebase Storage
+  getProfilePhoto() async {
+    final getImage = firebaseStorage.ref().child(userId);
+    var imageURL = await getImage.getDownloadURL();
+    if (imageURL != '') {
+      setState(() {
+        profilePicCheck = true;
+        profilePicture = imageURL;
+      });
+    } else {
+      setState(() {
+        profilePicCheck = false;
+      });
+    }
+    ;
   }
 
   @override
@@ -178,21 +204,30 @@ class _ProfilePage extends State<ProfilePage> {
               ),
               child: Column(
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 40.0),
-                    alignment: Alignment.center,
-                    height: 150.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey,
-                      // image: new DecorationImage(
-                      //   fit: BoxFit.contain,
-                      //   image: new NetworkImage(
-                      //     profilePic,
-                      //   ),
-                      // ),
-                    ),
-                  ),
+                  profilePicCheck
+                      ? Container(
+                          margin: EdgeInsets.only(top: 40.0),
+                          alignment: Alignment.center,
+                          height: 150.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.contain,
+                              image: NetworkImage(
+                                profilePicture,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          margin: EdgeInsets.only(top: 40.0),
+                          alignment: Alignment.center,
+                          height: 150.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey,
+                          ),
+                        ),
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
                     padding: EdgeInsets.only(left: 20.0, right: 20.0),
@@ -219,10 +254,10 @@ class _ProfilePage extends State<ProfilePage> {
                                             color: Colors.grey[700],
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold)),
-                                SizedBox(width: 5.0),
+                                SizedBox(width: 3.0),
                                 userVerified
                                     ? Icon(Icons.check_circle_rounded,
-                                        color: Colors.blue[300], size: 20.0)
+                                        color: Colors.blue[300], size: 16.0)
                                     : Container()
                               ],
                             )
