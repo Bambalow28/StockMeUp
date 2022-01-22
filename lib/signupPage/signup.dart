@@ -1,8 +1,10 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:newrandomproject/mainPages/home.dart';
+import 'package:image_picker/image_picker.dart';
 
 //View News Page Widget
 class SignUpPage extends StatefulWidget {
@@ -14,9 +16,17 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPage extends State<SignUpPage> {
   String appBarTitle = "Sign Up";
 
+  final ImagePicker imagePicker = ImagePicker();
+
+  List<XFile>? _imageFileList;
+  set imageFile(XFile? value) {
+    _imageFileList = value == null ? null : [value];
+  }
+
   bool hidePass = true;
   bool checkedValue = false;
   bool loginCheck = false;
+  bool checkImage = false;
 
   String signUpMessage = '';
 
@@ -26,12 +36,18 @@ class _SignUpPage extends State<SignUpPage> {
 
   late FirebaseAuth auth;
   late final FirebaseFirestore firestoreInstance;
+  late FirebaseStorage storageInstance;
 
   intiliazieConnection() {
     setState(() {
-      auth = FirebaseAuth.instance;
-      firestoreInstance = FirebaseFirestore.instance;
-      print('DB Initialized');
+      try {
+        auth = FirebaseAuth.instance;
+        firestoreInstance = FirebaseFirestore.instance;
+        storageInstance = FirebaseStorage.instance;
+        print('DB Initialized');
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
@@ -40,6 +56,23 @@ class _SignUpPage extends State<SignUpPage> {
         context,
         MaterialPageRoute(builder: (context) => MainPage()),
         ModalRoute.withName("/LoginPage"));
+  }
+
+  Future getImageFromGallery() async {
+    try {
+      var image = await imagePicker.pickImage(source: ImageSource.gallery);
+
+      setState(() {
+        imageFile = image;
+        checkImage = true;
+        print(_imageFileList![0].path);
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        checkImage = false;
+      });
+    }
   }
 
   @override
@@ -76,24 +109,35 @@ class _SignUpPage extends State<SignUpPage> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(top: 40.0, bottom: 10.0),
-                    alignment: Alignment.center,
-                    height: 200.0,
-                    decoration:
-                        BoxDecoration(shape: BoxShape.circle, color: Colors.grey
-                            // image: new DecorationImage(
-                            //   fit: BoxFit.contain,
-                            //   image: new NetworkImage(
-                            //     profilePic,
-                            //   ),
-                            // ),
-                            ),
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.grey[200],
-                      size: 150.0,
-                    ),
-                  ),
+                      margin: EdgeInsets.only(top: 40.0, bottom: 10.0),
+                      alignment: Alignment.center,
+                      height: 200.0,
+                      width: 200.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey,
+                      ),
+                      child: checkImage
+                          ? Container(
+                              width: 200.0,
+                              height: 200.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    image: AssetImage(_imageFileList![0].path),
+                                    fit: BoxFit.fill),
+                              ),
+                              // child: Image.file(
+                              //   File(_imageFileList![0].path),
+                              //   fit: BoxFit.fill,
+                              //   scale: 1.0,
+                              // ),
+                            )
+                          : Icon(
+                              Icons.person,
+                              size: 150.0,
+                              color: Colors.white,
+                            )),
                   GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
@@ -146,7 +190,8 @@ class _SignUpPage extends State<SignUpPage> {
                                         Expanded(
                                             child: GestureDetector(
                                           onTap: () {
-                                            print('Show Gallery');
+                                            getImageFromGallery();
+                                            Navigator.pop(context);
                                           },
                                           child: Container(
                                               margin:
@@ -303,38 +348,57 @@ class _SignUpPage extends State<SignUpPage> {
                     child: SizedBox(),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(top: 20.0),
+                      padding: EdgeInsets.only(top: 20.0, bottom: 15.0),
                       child: Text(
                         signUpMessage,
                         style: TextStyle(
                             color: loginCheck ? Colors.red : Colors.green,
-                            fontSize: 12.0),
+                            fontSize: 14.0),
                       )),
                   GestureDetector(
                       onTap: () async {
                         try {
-                          await auth.createUserWithEmailAndPassword(
-                              email: emailAddress.text,
-                              password: password.text);
-                          final User user = auth.currentUser!;
-                          final userId = user.uid;
-                          user.updateDisplayName(username.text);
-                          setState(() {
-                            loginCheck = false;
-                            firestoreInstance
-                                .collection('users')
-                                .doc(userId)
-                                .set({
-                              'displayName': username.text,
-                              'email': emailAddress.text,
-                              'verified': false
-                            }).then((verifyCheck) => {
-                                      signUpMessage =
-                                          'Account Successfully Created',
-                                      Future.delayed(Duration(seconds: 1),
-                                          () => {goToHomePage()}),
-                                    });
-                          });
+                          if (username.text == '') {
+                            setState(() {
+                              loginCheck = true;
+                              signUpMessage = 'Please Enter Username';
+                            });
+                          } else {
+                            await auth.createUserWithEmailAndPassword(
+                                email: emailAddress.text,
+                                password: password.text);
+                            final User user = auth.currentUser!;
+                            final userId = user.uid;
+                            user.updateDisplayName(username.text);
+                            setState(() {
+                              loginCheck = false;
+                              signUpMessage = 'Account Successfully Created';
+                              //Store Profile Picture into Firebase Storage
+                              if (_imageFileList![0].path != '') {
+                                storageInstance
+                                    .ref()
+                                    .child(userId)
+                                    .putFile(File(_imageFileList![0].path))
+                                    .whenComplete(
+                                        () => {print('Image Uploaded')});
+                              } else {
+                                return;
+                              }
+
+                              //Store Profile Info into Firestore Database
+                              firestoreInstance
+                                  .collection('users')
+                                  .doc(userId)
+                                  .set({
+                                'displayName': username.text,
+                                'email': emailAddress.text,
+                                'verified': false
+                              }).then((verifyCheck) => {
+                                        Future.delayed(Duration(seconds: 1),
+                                            () => {goToHomePage()}),
+                                      });
+                            });
+                          }
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             setState(() {
