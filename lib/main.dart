@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:newrandomproject/mainPages/home.dart';
-import 'package:newrandomproject/mainPages/verifiedHome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -89,43 +88,15 @@ class _LoginPageState extends State<LoginPage> {
         ModalRoute.withName("/LoginPage"));
   }
 
-  goToVerifiedHome() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => VerifiedHome()),
-        ModalRoute.withName("/LoginPage"));
-  }
-
   Future loginVerify() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailAddress.text, password: password.text);
       setState(() {
-        loginMessage = 'Login Success';
         loginCheck = false;
-        final User user = auth.currentUser!;
-        final userId = user.uid;
-        late bool userChecking;
-        firestoreInstance
-            .collection('users')
-            .doc(userId)
-            .get()
-            .then((value) => userChecking = value.data()!['verified'])
-            .then((verifyCheck) => {
-                  if (userChecking == true)
-                    {
-                      loginMessage = 'Loading...',
-                      Future.delayed(
-                          Duration(seconds: 1), () => {goToVerifiedHome()})
-                    }
-                  else
-                    {
-                      loginMessage = 'Loading...',
-                      Future.delayed(
-                          Duration(seconds: 1), () => {goToHomePage()})
-                    },
-                  userLoggedIn()
-                });
+        loginMessage = 'Login Success';
+        Future.delayed(Duration(seconds: 1), () => {goToHomePage()});
+        userLoggedIn();
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -267,36 +238,20 @@ class _LoginPageState extends State<LoginPage> {
                         isLoading = false;
                       });
                     },
-                    child: isLoading
-                        ? Container(
-                            width: 50.0,
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                                color: Colors.green[300],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30.0))),
-                            child: SizedBox(
-                              height: 100.0,
-                              width: 100.0,
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                      color: Colors.white, strokeWidth: 2.0)),
-                            ))
-                        : Container(
-                            width: 300.0,
-                            height: 45.0,
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                                color: Colors.green[300],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0))),
-                            child: Text(
-                              loginText,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 20.0),
-                            ),
-                          ),
+                    child: Container(
+                      width: 300.0,
+                      height: 45.0,
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          color: Colors.green[300],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                      child: Text(
+                        loginText,
+                        style: TextStyle(color: Colors.white, fontSize: 20.0),
+                      ),
+                    ),
                   ),
                   GestureDetector(
                       onTap: () async {
@@ -322,12 +277,17 @@ class _LoginPageState extends State<LoginPage> {
                       )),
                   Padding(
                       padding: EdgeInsets.only(top: 20.0),
-                      child: Text(
-                        loginMessage,
-                        style: TextStyle(
-                            color: loginCheck ? Colors.red : Colors.green,
-                            fontSize: 12.0),
-                      )),
+                      child: isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                  color: Colors.grey, strokeWidth: 2.0),
+                            )
+                          : Text(
+                              loginMessage,
+                              style: TextStyle(
+                                  color: loginCheck ? Colors.red : Colors.green,
+                                  fontSize: 12.0),
+                            )),
                   Expanded(
                     child: SizedBox(),
                   ),
