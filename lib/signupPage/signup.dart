@@ -75,6 +75,23 @@ class _SignUpPage extends State<SignUpPage> {
     }
   }
 
+  Future getImageFromCamera() async {
+    try {
+      var image = await imagePicker.pickImage(source: ImageSource.camera);
+
+      setState(() {
+        imageFile = image;
+        checkImage = true;
+        print(_imageFileList![0].path);
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        checkImage = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -159,7 +176,8 @@ class _SignUpPage extends State<SignUpPage> {
                                         Expanded(
                                             child: GestureDetector(
                                           onTap: () {
-                                            print('Show Camera');
+                                            getImageFromCamera();
+                                            Navigator.pop(context);
                                           },
                                           child: Container(
                                               margin:
@@ -370,20 +388,24 @@ class _SignUpPage extends State<SignUpPage> {
                             final User user = auth.currentUser!;
                             final userId = user.uid;
                             user.updateDisplayName(username.text);
+                            var getImage;
+
+                            //Store Profile Picture into Firebase Storage
+                            if (_imageFileList![0].path != '') {
+                              final imageLocation =
+                                  storageInstance.ref().child(userId);
+
+                              UploadTask storeImage = imageLocation
+                                  .putFile(File(_imageFileList![0].path));
+
+                              getImage = await storeImage
+                                  .then((image) => image.ref.getDownloadURL());
+                            } else {
+                              return;
+                            }
                             setState(() {
                               loginCheck = false;
                               signUpMessage = 'Account Successfully Created';
-                              //Store Profile Picture into Firebase Storage
-                              if (_imageFileList![0].path != '') {
-                                storageInstance
-                                    .ref()
-                                    .child(userId)
-                                    .putFile(File(_imageFileList![0].path))
-                                    .whenComplete(
-                                        () => {print('Image Uploaded')});
-                              } else {
-                                return;
-                              }
 
                               //Store Profile Info into Firestore Database
                               firestoreInstance
@@ -392,7 +414,8 @@ class _SignUpPage extends State<SignUpPage> {
                                   .set({
                                 'displayName': username.text,
                                 'email': emailAddress.text,
-                                'verified': false
+                                'verified': false,
+                                'profilePicture': getImage.toString()
                               }).then((verifyCheck) => {
                                         Future.delayed(Duration(seconds: 1),
                                             () => {goToHomePage()}),
