@@ -137,12 +137,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey[900],
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: GestureDetector(
             onTap: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
+              FocusScope.of(context).unfocus();
             },
-            child: Center(
+            child: SingleChildScrollView(
+                child: Container(
+              height: MediaQuery.of(context).size.height,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -305,6 +307,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-            )));
+            ))));
   }
 }
