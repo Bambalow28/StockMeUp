@@ -851,7 +851,6 @@ class _StockPage extends State<StockPage> {
                         margin: EdgeInsets.only(
                             top: 20.0, left: 10.0, right: 10.0, bottom: 20.0),
                         width: MediaQuery.of(context).size.width - 20,
-                        // height: 100.0,
                         decoration: BoxDecoration(
                             color: Colors.grey[850],
                             borderRadius:
@@ -903,14 +902,174 @@ class _StockPage extends State<StockPage> {
 
                                   return GestureDetector(
                                       onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => NewsInfo(
-                                                      newsUrl:
-                                                          newsArticles[index]
-                                                              ['url'],
-                                                    )));
+                                        showModalBottomSheet(
+                                            context: context,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(20.0),
+                                                    topRight:
+                                                        Radius.circular(20.0))),
+                                            backgroundColor: Colors.grey[850],
+                                            builder: (BuildContext context) {
+                                              return Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 15.0,
+                                                        left: 20.0,
+                                                        right: 20.0,
+                                                        bottom: 5.0),
+                                                    child: Text(
+                                                      newsArticles[index]
+                                                          ['title'],
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16.0,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 20.0,
+                                                                bottom: 10.0),
+                                                        child: Text(
+                                                          convertedTime,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: 10.0),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: SizedBox(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height: 150.0,
+                                                      margin: EdgeInsets.only(
+                                                          left: 20.0,
+                                                          right: 20.0),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                        child: newsImage == null
+                                                            ? Image.asset(
+                                                                'lib/src/images/noImagePhoto.png',
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              )
+                                                            : Image.network(
+                                                                newsArticles[
+                                                                        index][
+                                                                    'urlToImage'],
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                errorBuilder: (BuildContext
+                                                                        context,
+                                                                    Object
+                                                                        exception,
+                                                                    StackTrace?
+                                                                        stackTrace) {
+                                                                return Image.network(
+                                                                    newsArticles[
+                                                                            index]
+                                                                        [
+                                                                        'urlToImage'],
+                                                                    fit: BoxFit
+                                                                        .cover);
+                                                              }),
+                                                      )),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 20.0,
+                                                        top: 10.0,
+                                                        right: 20.0),
+                                                    child: Text(
+                                                      newsArticles[index][
+                                                                  'description'] ==
+                                                              null
+                                                          ? 'Description Not Available'
+                                                          : newsArticles[index]
+                                                              ['description'],
+                                                      style: TextStyle(
+                                                          color: newsArticles[
+                                                                          index]
+                                                                      [
+                                                                      'description'] ==
+                                                                  null
+                                                              ? Colors.grey
+                                                              : Colors.white,
+                                                          fontSize: 14.0),
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      NewsInfo(
+                                                                        newsUrl:
+                                                                            newsArticles[index]['url'],
+                                                                      ))).then(
+                                                          (value) => {
+                                                                Navigator.pop(
+                                                                    context)
+                                                              });
+                                                    },
+                                                    child: Container(
+                                                        width: 150.0,
+                                                        height: 30.0,
+                                                        margin: EdgeInsets.only(
+                                                            top: 20.0,
+                                                            bottom: 25.0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Colors.blue[900],
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.blue,
+                                                              width: 1.0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  6.0),
+                                                          child: Text(
+                                                            'Article Link',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        )),
+                                                  )
+                                                ],
+                                              );
+                                            });
                                       },
                                       child: Container(
                                           margin: EdgeInsets.only(
