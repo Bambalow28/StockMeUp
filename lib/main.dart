@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                       controller: emailAddress,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.grey[800],
+                        fillColor: Colors.grey[850],
                         prefixIcon: Icon(Icons.person, color: Colors.grey),
                         hintText: 'Email Address',
                         hintStyle: TextStyle(color: Colors.grey),
@@ -197,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: hidePass,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.grey[800],
+                        fillColor: Colors.grey[850],
                         prefixIcon:
                             Icon(Icons.lock_open_rounded, color: Colors.grey),
                         suffixIcon: IconButton(
