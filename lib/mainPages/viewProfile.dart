@@ -217,7 +217,7 @@ class _ViewProfile extends State<ViewProfile> {
                     ),
                   ),
                   SizedBox(
-                    height: 20.0,
+                    height: 15.0,
                   ),
                   Row(
                     children: <Widget>[
@@ -225,7 +225,7 @@ class _ViewProfile extends State<ViewProfile> {
                         child: GestureDetector(
                           child: Container(
                             height: 40.0,
-                            margin: EdgeInsets.only(left: 20.0),
+                            margin: EdgeInsets.only(left: 30.0),
                             padding: EdgeInsets.all(10.0),
                             decoration: BoxDecoration(
                                 color: Colors.blue,
@@ -247,7 +247,7 @@ class _ViewProfile extends State<ViewProfile> {
                         child: Container(
                             width: 70.0,
                             height: 40.0,
-                            margin: EdgeInsets.only(right: 20.0),
+                            margin: EdgeInsets.only(right: 30.0),
                             padding: EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                                 color: Colors.white,
