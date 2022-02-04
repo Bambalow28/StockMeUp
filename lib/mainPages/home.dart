@@ -550,7 +550,6 @@ class _MainPage extends State<MainPage> {
                         text = text.toLowerCase();
                         filterUsers(text);
                       });
-                      print(filteredNames);
                     },
                     decoration: InputDecoration(
                       isDense: true,
