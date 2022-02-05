@@ -54,8 +54,6 @@ class _LoginPageState extends State<LoginPage> {
 
   userLoggedIn() async {
     prefs = await SharedPreferences.getInstance();
-    var status = prefs.getBool('isLoggedIn');
-
     setState(() {
       prefs.setBool("isLoggedIn", true);
     });
@@ -65,6 +63,15 @@ class _LoginPageState extends State<LoginPage> {
     prefs = await SharedPreferences.getInstance();
 
     var status = prefs.getBool('isLoggedIn');
+    if (status == true) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+          ModalRoute.withName("/LoginPage"));
+    } else {
+      return;
+    }
+    print('User Login Status: ' + status.toString());
   }
 
   //Initiate FlutterFire (Firebase)
@@ -95,8 +102,8 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         loginCheck = false;
         loginMessage = 'Login Success';
-        Future.delayed(Duration(seconds: 1), () => {goToHomePage()});
         userLoggedIn();
+        Future.delayed(Duration(seconds: 1), () => {goToHomePage()});
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -181,8 +188,8 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: Colors.blue, width: 1.0),
+                            borderSide: BorderSide(
+                                color: Colors.blue[300]!, width: 1.0),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                       ),
@@ -221,8 +228,8 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 1.0),
+                            borderSide: BorderSide(
+                                color: Colors.blue[300]!, width: 1.0),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
                       ),
