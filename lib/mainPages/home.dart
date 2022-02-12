@@ -278,154 +278,38 @@ class _MainPage extends State<MainPage> {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                child: Text(
-                  signalInfo[index]['tickerSymbol'],
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32.0,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
-                child: Text(
-                  signalInfo[index]['signalPost'],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
-                width: MediaQuery.of(context).size.width,
-                height: 130.0,
-                decoration: BoxDecoration(
-                    color: Colors.grey[800],
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    border: Border.all(color: Colors.blue, width: 1.0)),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                      child: Text(
-                        'Signal Status',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold),
-                      ),
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                    child: Text(
+                      'Stock Name',
+                      style: TextStyle(color: Colors.grey, fontSize: 12.0),
                     ),
-                    SizedBox(height: 10.0),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                            child: Container(
-                                margin: EdgeInsets.only(left: 20.0),
-                                padding: EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.green[800],
-                                    border: Border.all(
-                                        color: Colors.green, width: 1.0),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 5.0),
-                                      child: Text(
-                                        signalInfo[index]['goodSignal']
-                                            .toString(),
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 24.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 10.0),
-                                      child: Text(
-                                        'Good Signal',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                ))),
-                        SizedBox(width: 10.0),
-                        Expanded(
-                            child: Container(
-                                margin: EdgeInsets.only(right: 20.0),
-                                padding: EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.red[800],
-                                    border: Border.all(
-                                        color: Colors.red, width: 1.0),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 5.0),
-                                      child: Text(
-                                        signalInfo[index]['badSignal']
-                                            .toString(),
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 24.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 10.0),
-                                      child: Text(
-                                        'Bad Signal',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                )))
-                      ],
-                    )
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: SizedBox(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0, right: 20.0),
+                    child: Text(
+                      formattedDate,
+                      style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                    ),
+                  ),
+                ],
               ),
               Row(
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 5.0, left: 20.0),
-                    alignment: Alignment.center,
-                    height: 50.0,
-                    width: 30.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey[400],
-                      // image: new DecorationImage(
-                      //   fit: BoxFit.contain,
-                      //   image: new NetworkImage(
-                      //     profilePic,
-                      //   ),
-                      // ),
-                    ),
-                  ),
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 5.0),
+                    padding: EdgeInsets.only(left: 20.0),
                     child: Text(
-                      signalInfo[index]['user'],
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      signalInfo[index]['tickerSymbol'],
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 2.0),
-                    child: Icon(Icons.check_circle_rounded,
-                        color: Colors.blue[300], size: 12.0),
                   ),
                   Expanded(
                     child: SizedBox(),
@@ -434,91 +318,193 @@ class _MainPage extends State<MainPage> {
               ),
               Row(
                 children: <Widget>[
+                  Padding(
+                    padding:
+                        EdgeInsets.only(top: 10.0, bottom: 5.0, left: 20.0),
+                    child: Text(
+                      'Description',
+                      style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                    ),
+                  ),
                   Expanded(
-                      child: GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              signalVote = true;
-                            });
-
-                            await firestoreInstance
-                                .collection("posts")
-                                .doc(signalInfo[index]['postID'])
-                                .update({
-                              "goodSignal":
-                                  FieldValue.increment(signalVote ? (1) : (-1))
-                            });
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(left: 20.0),
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                                color: Colors.green[800],
-                                border:
-                                    Border.all(color: Colors.green, width: 1.0),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30.0))),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(Icons.trending_up_rounded,
-                                    color: Colors.white),
-                                SizedBox(width: 5.0),
-                                Text(
-                                  'Good Signal',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ))),
-                  SizedBox(width: 10.0),
+                    child: SizedBox(),
+                  )
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 5.0, left: 20.0),
+                    child: Text(
+                      signalInfo[index]['signalPost'],
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   Expanded(
-                      child: GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              signalVote = false;
-                            });
-
-                            await firestoreInstance
-                                .collection("posts")
-                                .doc(signalInfo[index]['postID'])
-                                .update({
-                              "badSignal":
-                                  FieldValue.increment(signalVote ? (-1) : (1))
-                            });
-                          },
-                          child: Container(
-                            height: 50.0,
-                            margin: EdgeInsets.only(right: 20.0),
-                            decoration: BoxDecoration(
-                                color: Colors.red[800],
-                                border:
-                                    Border.all(color: Colors.red, width: 1.0),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30.0))),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(Icons.trending_down_rounded,
-                                    color: Colors.white),
-                                SizedBox(width: 5.0),
-                                Text(
-                                  'Bad Signal',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ))),
+                    child: SizedBox(),
+                  )
                 ],
               ),
               SizedBox(
-                height: 40.0,
+                height: 20.0,
+              ),
+              // Row(
+              //   children: <Widget>[
+              //     Padding(
+              //       padding:
+              //           EdgeInsets.only(top: 10.0, bottom: 5.0, left: 20.0),
+              //       child: Text(
+              //         'Signal Accuracy',
+              //         style: TextStyle(color: Colors.grey, fontSize: 12.0),
+              //       ),
+              //     ),
+              //     Expanded(
+              //       child: SizedBox(),
+              //     )
+              //   ],
+              // ),
+              // Row(
+              //   children: <Widget>[
+              //     Padding(
+              //       padding: EdgeInsets.only(left: 20.0),
+              //       child: RichText(
+              //           text: TextSpan(
+              //               text: '99% ',
+              //               style:
+              //                   TextStyle(color: Colors.green, fontSize: 14.0),
+              //               children: <TextSpan>[
+              //             TextSpan(
+              //                 text: 'Accurate',
+              //                 style: TextStyle(
+              //                     color: Colors.white, fontSize: 14.0))
+              //           ])),
+              //     ),
+              //     Expanded(
+              //       child: SizedBox(),
+              //     )
+              //   ],
+              // ),
+              SizedBox(height: 8.0),
+              Row(
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                          width: 200.0,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 20.0, bottom: 5.0),
+                                    child: Text(
+                                      'Posted By',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 12.0),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                    margin: EdgeInsets.only(left: 20.0),
+                                    alignment: Alignment.center,
+                                    height: 25.0,
+                                    width: 25.0,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey[400],
+                                      // image: new DecorationImage(
+                                      //   fit: BoxFit.contain,
+                                      //   image: new NetworkImage(
+                                      //     profilePic,
+                                      //   ),
+                                      // ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 5.0, bottom: 5.0, left: 5.0),
+                                    child: Text(
+                                      signalInfo[index]['user'],
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 14.0),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 5.0, bottom: 5.0, left: 2.0),
+                                    child: Icon(Icons.check_circle_rounded,
+                                        color: Colors.blue[300], size: 12.0),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )),
+                    ],
+                  ),
+                  Expanded(
+                    child: SizedBox(),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print('Good Signal');
+                    },
+                    child: Container(
+                        margin: EdgeInsets.only(left: 20.0),
+                        padding: EdgeInsets.all(8.0),
+                        width: 50.0,
+                        height: 50.0,
+                        decoration: BoxDecoration(
+                            color: Colors.green[800],
+                            border: Border.all(color: Colors.green, width: 1.0),
+                            shape: BoxShape.circle),
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        )),
+                  ),
+                  SizedBox(width: 10.0),
+                  GestureDetector(
+                      onTap: () {
+                        print('Bad Signal');
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(right: 20.0),
+                          width: 50.0,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                              color: Colors.red[800],
+                              border: Border.all(color: Colors.red, width: 1.0),
+                              shape: BoxShape.circle),
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: 12.0,
+                                  right: 10.0,
+                                  bottom: 10.0,
+                                  left: 9.0),
+                              child: Text(
+                                'X',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )))),
+                ],
+              ),
+              SizedBox(
+                height: 30.0,
               )
             ],
           );
@@ -758,24 +744,39 @@ class _MainPage extends State<MainPage> {
                         showMarketStatus(context);
                       },
                       child: Container(
-                        padding: EdgeInsets.all(5.0),
-                        margin: EdgeInsets.only(top: 20.0, bottom: 25.0),
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width - 100,
-                        decoration: BoxDecoration(
-                            color: marketStatusCheck
-                                ? Colors.green[400]
-                                : Colors.red[400],
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0))),
-                        child: Text(
-                          marketStatus,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                          padding: EdgeInsets.all(5.0),
+                          margin: EdgeInsets.only(
+                              top: 20.0, bottom: 25.0, left: 10.0, right: 10.0),
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                              color: marketStatusCheck
+                                  ? Colors.green[400]
+                                  : Colors.red[400],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              marketStatusCheck
+                                  ? Icon(Icons.lock_open_rounded,
+                                      color: Colors.white)
+                                  : Icon(Icons.lock_outline_rounded,
+                                      color: Colors.white, size: 25.0),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              Text(
+                                marketStatus,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 23.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          )),
                     ),
                     Expanded(
                         child: signalInfo.length != 0
