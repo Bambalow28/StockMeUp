@@ -158,16 +158,37 @@ class _LoginPageState extends State<LoginPage> {
                   Expanded(
                     child: SizedBox(),
                   ),
+                  // Container(
+                  //   margin: EdgeInsets.only(top: 130.0),
+                  //   width: 180.0,
+                  //   height: 180.0,
+                  //   decoration: BoxDecoration(
+                  //       color: Colors.blue[700],
+                  //       borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                  //   child: Icon(
+                  //     Icons.signal_cellular_alt_sharp,
+                  //     color: Colors.yellow[50],
+                  //     size: 150.0,
+                  //   ),
+                  // ),
                   Container(
-                    padding: EdgeInsets.only(top: 150, bottom: 10.0),
-                    child: Text(
-                      'STOCKMEUP',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                      padding: EdgeInsets.only(top: 150.0, bottom: 10.0),
+                      child: RichText(
+                        text: TextSpan(
+                            text: 'STOCKME',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 45.0,
+                                fontStyle: FontStyle.italic),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: 'UP',
+                                  style: TextStyle(
+                                      color: Colors.blue[300],
+                                      fontSize: 55.0,
+                                      fontWeight: FontWeight.bold))
+                            ]),
+                      )),
                   Expanded(
                     child: SizedBox(),
                   ),
