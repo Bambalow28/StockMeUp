@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -344,24 +345,55 @@ class _SignUpPage extends State<SignUpPage> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  Container(
-                      child: Theme(
-                          data: ThemeData(unselectedWidgetColor: Colors.grey),
-                          child: CheckboxListTile(
-                            checkColor: Colors.white,
-                            title: Text(
-                              "I agree with Privacy Policy",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            value: checkedValue,
-                            onChanged: (newValue) {
-                              setState(() {
-                                checkedValue = newValue!;
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity
-                                .leading, //  <-- leading Checkbox
-                          ))),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 15.0),
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'By Signing Up, you agree with ',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.0,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: 'User Agreement',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                backgroundColor:
+                                                    Colors.grey[850],
+                                                title: Text('Privacy Policy',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                content: Text(
+                                                  'We are not responsible for loss of money. This app is designed to help '
+                                                  'users shadow trade with their own choice. Highly Risky. Follow at your own risk.',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14.0),
+                                                ),
+                                              );
+                                            });
+                                      },
+                                    style: TextStyle(
+                                        color: Colors.blue[400],
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.bold))
+                              ]),
+                        ),
+                      ),
+                      Expanded(
+                        child: SizedBox(),
+                      )
+                    ],
+                  ),
                   Expanded(
                     child: SizedBox(),
                   ),
