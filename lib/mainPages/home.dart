@@ -17,7 +17,7 @@ class MainPage extends StatefulWidget {
 
 //View News Widget State
 class _MainPage extends State<MainPage> {
-  String appBarTitle = "Home";
+  String appBarTitle = "UP";
   bool userVerified = false;
   String marketStatus = '';
   bool marketStatusCheck = false;
@@ -27,6 +27,8 @@ class _MainPage extends State<MainPage> {
   var userId;
   late var displayName;
   var allNames;
+
+  Color dateArrow = Colors.white;
 
   //Texts for each signals
   List signalInfo = [];
@@ -41,7 +43,9 @@ class _MainPage extends State<MainPage> {
   //DateTime
   DateTime timeNow = DateTime.now();
   DateFormat formatter = DateFormat.yMd().add_jm();
+  DateFormat formatMonthDate = DateFormat('MMMM dd, yyyy');
   String formattedDate = '';
+  DateTime backDate = DateTime.now();
 
   late FirebaseAuth auth = FirebaseAuth.instance;
   late FirebaseStorage storage = FirebaseStorage.instance;
@@ -174,7 +178,6 @@ class _MainPage extends State<MainPage> {
 
       switch (pageIndex) {
         case 0:
-          appBarTitle = "Home";
           break;
         case 1:
           Navigator.of(context).push(stocksRoute());
@@ -668,7 +671,24 @@ class _MainPage extends State<MainPage> {
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(18, 18, 18, 1),
         appBar: AppBar(
-          title: Text(appBarTitle),
+          title: RichText(
+            text: TextSpan(
+                text: 'STOCKME',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                    fontStyle: FontStyle.italic),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: 'UP',
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                        fontSize: 18.0),
+                  )
+                ]),
+          ),
           backgroundColor: const Color.fromRGBO(38, 38, 38, 1.0),
           automaticallyImplyLeading: false,
           actions: [
@@ -778,6 +798,66 @@ class _MainPage extends State<MainPage> {
                             ],
                           )),
                     ),
+                    Container(
+                        margin: EdgeInsets.only(top: 5.0, bottom: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(left: 20.0),
+                              child: Text(
+                                'Signals',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Expanded(
+                              child: SizedBox(),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.arrow_back_ios_outlined,
+                                  size: 14.0, color: Colors.white),
+                              onPressed: () {
+                                setState(() {
+                                  backDate = DateTime(backDate.year,
+                                      backDate.month, backDate.day - 1);
+                                  // formatMonthDate.format(backDate);
+                                });
+                              },
+                            ),
+                            Text(
+                              formatMonthDate.format(backDate),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12.0),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.arrow_forward_ios_rounded,
+                                  size: 14.0,
+                                  color: backDate.month == timeNow.month &&
+                                          backDate.day == timeNow.day
+                                      ? Colors.grey
+                                      : dateArrow),
+                              onPressed: () {
+                                setState(() {
+                                  if (backDate.month == timeNow.month &&
+                                      backDate.day == timeNow.day) {
+                                    dateArrow = Colors.grey;
+                                    print('Cant Go Past Today');
+                                  } else {
+                                    backDate = DateTime(backDate.year,
+                                        backDate.month, backDate.day + 1);
+                                  }
+                                });
+                              },
+                            ),
+                            SizedBox(width: 10.0)
+                          ],
+                        )),
                     Expanded(
                         child: signalInfo.length != 0
                             ? ListView.builder(
