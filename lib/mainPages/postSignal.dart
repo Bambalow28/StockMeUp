@@ -122,7 +122,7 @@ class _postSignal extends State<postSignal> {
                       child: TextField(
                         textCapitalization: TextCapitalization.words,
                         controller: signalPost,
-                        maxLines: 2,
+                        maxLines: 4,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color.fromRGBO(45, 45, 45, 1),
@@ -274,8 +274,9 @@ class _postSignal extends State<postSignal> {
                     ),
                     Expanded(
                       child: Container(
-                          width: MediaQuery.of(context).size.width - 80,
-                          margin: EdgeInsets.only(top: 20.0),
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.only(
+                              top: 20.0, left: 10.0, right: 10.0),
                           padding: EdgeInsets.all(10.0),
                           decoration: BoxDecoration(
                               color: Colors.grey[900],
@@ -288,10 +289,10 @@ class _postSignal extends State<postSignal> {
                                 style: TextStyle(
                                     color: Colors.grey,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16.0),
+                                    fontSize: 18.0),
                               ),
                               SizedBox(
-                                height: 10.0,
+                                height: 15.0,
                               ),
                               Expanded(
                                   child: ListView.builder(
@@ -307,114 +308,171 @@ class _postSignal extends State<postSignal> {
                                         formattedDate =
                                             formatter.format(parsedDate);
 
-                                        return Container(
-                                          margin: EdgeInsets.only(
-                                              left: 10.0,
-                                              right: 10.0,
-                                              bottom: 10.0),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: 100.0,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey[800],
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0))),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Row(
+                                        return Dismissible(
+                                            key: Key(
+                                                tickerInfo[index]['postID']),
+                                            onDismissed: (direction) {
+                                              setState(() {
+                                                tickerInfo.removeAt(index);
+                                                firestoreInstance
+                                                    .collection("posts")
+                                                    .doc(tickerInfo[index]
+                                                        ['postID'])
+                                                    .delete();
+                                              });
+
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          'Signal Deleted')));
+                                            },
+                                            direction:
+                                                DismissDirection.endToStart,
+                                            background: Container(),
+                                            secondaryBackground: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red[400],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10.0))),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: SizedBox(),
+                                                    ),
+                                                    Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 20.0),
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          color: Colors.white,
+                                                        ))
+                                                  ],
+                                                )),
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10.0,
+                                                  right: 10.0,
+                                                  bottom: 10.0),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 100.0,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey[800],
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              10.0))),
+                                              child: Column(
                                                 children: <Widget>[
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 10.0,
-                                                          left: 10.0),
-                                                      child: Text(
-                                                        tickerInfo[index]
-                                                            ['tickerSymbol'],
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 24.0),
-                                                      )),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 10.0,
+                                                                  left: 10.0),
+                                                          child: Text(
+                                                            tickerInfo[index][
+                                                                'tickerSymbol'],
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 24.0),
+                                                          )),
+                                                      Expanded(
+                                                        child: SizedBox(),
+                                                      ),
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 10.0,
+                                                                  right: 20.0),
+                                                          child: Text(
+                                                            tickerInfo[index]
+                                                                ['signal'],
+                                                            style: TextStyle(
+                                                                color: tickerInfo[index]
+                                                                            [
+                                                                            'signal'] ==
+                                                                        'BUY'
+                                                                    ? Colors.green[
+                                                                        300]
+                                                                    : Colors.red[
+                                                                        300],
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 20.0),
+                                                          )),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 5.0,
+                                                                  left: 10.0),
+                                                          child: Text(
+                                                            tickerInfo[index]
+                                                                ['signalPost'],
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 16.0),
+                                                          )),
+                                                      Expanded(
+                                                        child: SizedBox(),
+                                                      )
+                                                    ],
+                                                  ),
                                                   Expanded(
                                                     child: SizedBox(),
                                                   ),
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 10.0,
-                                                          right: 20.0),
-                                                      child: Text(
-                                                        tickerInfo[index]
-                                                            ['signal'],
-                                                        style: TextStyle(
-                                                            color: tickerInfo[
-                                                                            index]
-                                                                        [
-                                                                        'signal'] ==
-                                                                    'BUY'
-                                                                ? Colors
-                                                                    .green[300]
-                                                                : Colors
-                                                                    .red[300],
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20.0),
-                                                      )),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 5.0, left: 10.0),
-                                                      child: Text(
-                                                        tickerInfo[index]
-                                                            ['signalPost'],
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16.0),
-                                                      )),
-                                                  Expanded(
-                                                    child: SizedBox(),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10.0,
+                                                                bottom: 5.0),
+                                                        child: Text(
+                                                          tickerInfo[index]
+                                                              ['postStatus'],
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: 12.0),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: SizedBox(),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 10.0,
+                                                                bottom: 5.0),
+                                                        child: Text(
+                                                          formattedDate,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: 12.0),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   )
                                                 ],
                                               ),
-                                              Expanded(
-                                                child: SizedBox(),
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10.0,
-                                                        bottom: 5.0),
-                                                    child: Text(
-                                                      tickerInfo[index]
-                                                          ['postStatus'],
-                                                      style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12.0),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: SizedBox(),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 10.0,
-                                                        bottom: 5.0),
-                                                    child: Text(
-                                                      formattedDate,
-                                                      style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12.0),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        );
+                                            ));
                                       }))
                             ],
                           )),
