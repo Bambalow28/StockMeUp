@@ -55,7 +55,7 @@ class _PortfolioInfo extends State<PortfolioInfo> {
               padding: EdgeInsets.only(right: 10.0),
               child: IconButton(
                   icon: Icon(
-                    Icons.add_circle_outline_rounded,
+                    Icons.create,
                     color: Colors.blue[300],
                   ),
                   onPressed: () {
@@ -156,9 +156,30 @@ class _PortfolioInfo extends State<PortfolioInfo> {
                                   ),
                                   Expanded(
                                     child: SizedBox(),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      print('Test');
+                                    },
+                                    child: Container(
+                                      height: 35.0,
+                                      margin: EdgeInsets.only(
+                                          right: 20.0, top: 10.0),
+                                      padding: EdgeInsets.only(
+                                          left: 10.0, right: 10.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue[300],
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: 18.0,
+                                      ),
+                                    ),
                                   )
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         );
