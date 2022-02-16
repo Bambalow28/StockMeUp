@@ -862,7 +862,13 @@ class _StockPage extends State<StockPage> {
                                                                         child:
                                                                             ExpansionTile(
                                                                           trailing:
-                                                                              SizedBox.shrink(),
+                                                                              Text(
+                                                                            '0.000123BTC',
+                                                                            style: TextStyle(
+                                                                                color: Colors.green,
+                                                                                fontSize: 12.0,
+                                                                                fontWeight: FontWeight.bold),
+                                                                          ),
                                                                           title:
                                                                               Row(
                                                                             children: <Widget>[
@@ -885,16 +891,37 @@ class _StockPage extends State<StockPage> {
                                                                               Expanded(
                                                                                 child: SizedBox(),
                                                                               ),
-                                                                              Padding(
-                                                                                padding: EdgeInsets.only(right: 20.0),
-                                                                                child: Text(
-                                                                                  '0.000123BTC',
-                                                                                  style: TextStyle(color: Colors.green, fontSize: 12.0, fontWeight: FontWeight.bold),
-                                                                                ),
-                                                                              ),
                                                                             ],
                                                                           ),
                                                                           children: [
+                                                                            Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                                              children: <Widget>[
+                                                                                Text(
+                                                                                  'Date',
+                                                                                  style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: SizedBox(),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: Text(
+                                                                                    'Holdings',
+                                                                                    style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                                                                                  ),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: SizedBox(),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: Text(
+                                                                                    'Price',
+                                                                                    style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
                                                                             Container(
                                                                                 height: 80.0,
                                                                                 child: ListView.builder(
@@ -911,7 +938,7 @@ class _StockPage extends State<StockPage> {
                                                                                                 padding: EdgeInsets.only(right: 10.0),
                                                                                                 child: Text(
                                                                                                   '02/11/22',
-                                                                                                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                                                                                  style: TextStyle(color: Colors.white, fontSize: 14.0),
                                                                                                 ),
                                                                                               ),
                                                                                               Expanded(
@@ -921,7 +948,7 @@ class _StockPage extends State<StockPage> {
                                                                                                 padding: EdgeInsets.only(right: 10.0),
                                                                                                 child: Text(
                                                                                                   '0.00050BTC',
-                                                                                                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                                                                                  style: TextStyle(color: Colors.white, fontSize: 14.0),
                                                                                                 ),
                                                                                               ),
                                                                                               Expanded(
@@ -929,7 +956,7 @@ class _StockPage extends State<StockPage> {
                                                                                               ),
                                                                                               Text(
                                                                                                 '\$10.00',
-                                                                                                style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                                                                                style: TextStyle(color: Colors.white, fontSize: 14.0),
                                                                                               ),
                                                                                             ],
                                                                                           ));
