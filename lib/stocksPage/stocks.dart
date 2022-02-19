@@ -31,6 +31,8 @@ class _StockPage extends State<StockPage> {
 
   List newsArticles = [];
 
+  TextEditingController searchStocks = TextEditingController();
+
   DateTime now = DateTime.now();
   DateFormat formatter = DateFormat.yMd().add_jm();
   late String formatDate;
@@ -251,7 +253,83 @@ class _StockPage extends State<StockPage> {
             Padding(
               padding: EdgeInsets.only(right: 15.0),
               child: GestureDetector(
-                onTap: () => {print('Save Article')},
+                onTap: () => {
+                  showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.grey[850],
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0))),
+                      builder: (BuildContext context) {
+                        return GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      top: 20.0,
+                                      left: 20.0,
+                                      right: 20.0,
+                                      bottom: 10.0),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: TextField(
+                                    controller: searchStocks,
+                                    onChanged: (text) {
+                                      setState(() {
+                                        text = text.toLowerCase();
+                                        // filterUsers(text);
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      filled: true,
+                                      fillColor: Colors.grey[850],
+                                      hintText: 'Search Stocks',
+                                      suffixIcon: Icon(
+                                        Icons.search,
+                                        color: Colors.grey,
+                                      ),
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.grey, width: 1.0),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.grey, width: 1.0),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                    ),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.only(top: 5.0, left: 20.0),
+                                      child: Text(
+                                        'Results',
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20.0),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ));
+                      })
+                },
                 child: Icon(Icons.search_rounded),
               ),
             )
@@ -323,7 +401,7 @@ class _StockPage extends State<StockPage> {
                               Container(
                                 padding: EdgeInsets.only(left: 15.0, top: 10.0),
                                 child: Text(
-                                  'Trending',
+                                  'Trending Stocks',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20.0,
@@ -847,6 +925,8 @@ class _StockPage extends State<StockPage> {
                                                                               context,
                                                                           int index) {
                                                                     return Card(
+                                                                        elevation:
+                                                                            5,
                                                                         color: Colors.grey[
                                                                             800],
                                                                         shape: RoundedRectangleBorder(
@@ -866,7 +946,7 @@ class _StockPage extends State<StockPage> {
                                                                             '0.000123BTC',
                                                                             style: TextStyle(
                                                                                 color: Colors.green,
-                                                                                fontSize: 12.0,
+                                                                                fontSize: 10.0,
                                                                                 fontWeight: FontWeight.bold),
                                                                           ),
                                                                           title:
@@ -884,7 +964,7 @@ class _StockPage extends State<StockPage> {
                                                                               Padding(
                                                                                   padding: EdgeInsets.only(left: 15.0),
                                                                                   child: RichText(
-                                                                                    text: TextSpan(text: cryptoHoldings[index], style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold), children: <TextSpan>[
+                                                                                    text: TextSpan(text: cryptoHoldings[index], style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold), children: <TextSpan>[
                                                                                       TextSpan(text: ' BTC', style: TextStyle(color: Colors.grey, fontSize: 12.0))
                                                                                     ]),
                                                                                   )),
@@ -1083,7 +1163,7 @@ class _StockPage extends State<StockPage> {
                                 child: Row(
                                   children: <Widget>[
                                     Text(
-                                      'News',
+                                      'Latest News',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 20.0,
