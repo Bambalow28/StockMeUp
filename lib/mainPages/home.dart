@@ -53,6 +53,27 @@ class _MainPage extends State<MainPage> {
 
   TextEditingController searchUser = TextEditingController();
 
+  //Show Data based on Date
+  getDateAndFormat() async {
+    var getDate = await firestoreInstance.collection("posts").get();
+
+    getDate.docs.forEach((element) {
+      var dateData = element.data()['timePosted'];
+      var formatDate = DateTime.parse(dateData.toDate().toString());
+
+      if (backDate.year == formatDate.year &&
+          backDate.month == formatDate.month &&
+          backDate.day == formatDate.day) {
+        print('DATE MATCH');
+        setState(() {
+          signalInfo.add(element.data());
+        });
+      } else {
+        print('DATE NOT MATCH');
+      }
+    });
+  }
+
   //Get all usernames from Firebase
   getAllUsersFromFirebase() async {
     var userCheck = await firestoreInstance.collection("users").get();
@@ -201,20 +222,20 @@ class _MainPage extends State<MainPage> {
     }
   }
 
-  //Get all data stored in Firestore in Firebase
-  getDataFromFirebase() async {
-    var getPosts = await firestoreInstance.collection('posts').get();
+  // //Get all data stored in Firestore in Firebase
+  // getDataFromFirebase() async {
+  //   var getPosts = await firestoreInstance.collection('posts').get();
 
-    getPosts.docs.forEach((userIdentify) {
-      if (userIdentify['postStatus'] == 'Public') {
-        setState(() {
-          signalInfo.add(userIdentify.data());
-        });
-      } else if (userIdentify['postStatus'] == 'Private') {
-        return;
-      }
-    });
-  }
+  //   getPosts.docs.forEach((userIdentify) {
+  //     if (userIdentify['postStatus'] == 'Public') {
+  //       setState(() {
+  //         signalInfo.add(userIdentify.data());
+  //       });
+  //     } else if (userIdentify['postStatus'] == 'Private') {
+  //       return;
+  //     }
+  //   });
+  // }
 
   //Show Market Status (When it opens)
   showMarketStatus(BuildContext context) {
@@ -269,7 +290,12 @@ class _MainPage extends State<MainPage> {
     }
   }
 
-  signalBottomSheet(BuildContext context, int index) {
+  signalBottomSheet(BuildContext context, int index) async {
+    var getGoodSignal = await firestoreInstance
+        .collection("posts")
+        .doc(signalInfo[index]['postID'])
+        .get();
+
     return showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -278,6 +304,7 @@ class _MainPage extends State<MainPage> {
                 topRight: Radius.circular(20.0))),
         backgroundColor: Colors.grey[850],
         builder: (BuildContext context) {
+          bool postStatus = false;
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -461,7 +488,30 @@ class _MainPage extends State<MainPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print('Good Signal');
+                      setState(() {
+                        if (postStatus == true) {
+                          print('Liked Already');
+                        } else {
+                          postStatus = true;
+                          print('Liked');
+                          if (getGoodSignal.data()!['badSignal'] != 0) {
+                            firestoreInstance
+                                .collection('posts')
+                                .doc(signalInfo[index]['postID'])
+                                .update({
+                              "goodSignal": FieldValue.increment(1),
+                              "badSignal": FieldValue.increment(-1)
+                            });
+                          } else {
+                            firestoreInstance
+                                .collection('posts')
+                                .doc(signalInfo[index]['postID'])
+                                .update({
+                              "goodSignal": FieldValue.increment(1),
+                            });
+                          }
+                        }
+                      });
                     },
                     child: Container(
                         margin: EdgeInsets.only(left: 20.0),
@@ -480,7 +530,32 @@ class _MainPage extends State<MainPage> {
                   SizedBox(width: 10.0),
                   GestureDetector(
                       onTap: () {
-                        print('Bad Signal');
+                        setState(() {
+                          if (postStatus == true) {
+                            postStatus = false;
+                            print('Disliked');
+                            print('Liked Status: ' +
+                                getGoodSignal.data()!['goodSignal'].toString());
+                            if (getGoodSignal.data()!['goodSignal'] != 0) {
+                              firestoreInstance
+                                  .collection('posts')
+                                  .doc(signalInfo[index]['postID'])
+                                  .update({
+                                "badSignal": FieldValue.increment(1),
+                                "goodSignal": FieldValue.increment(-1)
+                              });
+                            } else {
+                              firestoreInstance
+                                  .collection('posts')
+                                  .doc(signalInfo[index]['postID'])
+                                  .update({
+                                "badSignal": FieldValue.increment(1),
+                              });
+                            }
+                          } else {
+                            print('Disliked Already');
+                          }
+                        });
                       },
                       child: Container(
                           margin: EdgeInsets.only(right: 20.0),
@@ -656,7 +731,7 @@ class _MainPage extends State<MainPage> {
     getUserLoginState();
     marketHours();
     checkVerifyUser();
-    getDataFromFirebase();
+    // getDataFromFirebase();
     getAllUsersFromFirebase();
   }
 
@@ -824,7 +899,8 @@ class _MainPage extends State<MainPage> {
                                 setState(() {
                                   backDate = DateTime(backDate.year,
                                       backDate.month, backDate.day - 1);
-                                  // formatMonthDate.format(backDate);
+                                  signalInfo.clear();
+                                  getDateAndFormat();
                                 });
                               },
                             ),
@@ -846,11 +922,12 @@ class _MainPage extends State<MainPage> {
                                 setState(() {
                                   if (backDate.month == timeNow.month &&
                                       backDate.day == timeNow.day) {
-                                    dateArrow = Colors.grey;
                                     print('Cant Go Past Today');
                                   } else {
                                     backDate = DateTime(backDate.year,
                                         backDate.month, backDate.day + 1);
+                                    signalInfo.clear();
+                                    getDateAndFormat();
                                   }
                                 });
                               },
