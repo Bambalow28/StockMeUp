@@ -19,6 +19,8 @@ class _PortfolioInfo extends State<PortfolioInfo> {
   String appBarTitle = "My Portfolio";
   int pageIndex = 2;
 
+  List cryptoHoldings = ['Bitcoin', 'Ethereum', 'Solana'];
+
   //Responsible for the Bottom Navigation Bar
   //Page doesn't change if user is in current page.
   void navigationBarTapped(int index) {
@@ -164,7 +166,7 @@ class _PortfolioInfo extends State<PortfolioInfo> {
                                     child: Container(
                                       height: 35.0,
                                       margin: EdgeInsets.only(
-                                          right: 20.0, top: 10.0),
+                                          right: 5.0, top: 10.0),
                                       padding: EdgeInsets.only(
                                           left: 10.0, right: 10.0),
                                       decoration: BoxDecoration(
@@ -177,9 +179,217 @@ class _PortfolioInfo extends State<PortfolioInfo> {
                                         size: 18.0,
                                       ),
                                     ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      print('Test');
+                                    },
+                                    child: Container(
+                                      height: 35.0,
+                                      margin: EdgeInsets.only(
+                                          right: 20.0, top: 10.0),
+                                      padding: EdgeInsets.only(
+                                          left: 10.0, right: 10.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red[300],
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                        size: 18.0,
+                                      ),
+                                    ),
                                   )
                                 ],
                               ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Expanded(
+                                  child: ListView.builder(
+                                itemCount: cryptoHoldings.length,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Column(
+                                    children: <Widget>[
+                                      Card(
+                                          elevation: 5,
+                                          color: Colors.grey[800],
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0))),
+                                          margin: EdgeInsets.only(
+                                              left: 20.0,
+                                              right: 20.0,
+                                              bottom: 10.0),
+                                          child: ExpansionTile(
+                                            trailing: Text(
+                                              '0.000123BTC',
+                                              style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 10.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            title: Row(
+                                              children: <Widget>[
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 15.0),
+                                                    child: RichText(
+                                                      text: TextSpan(
+                                                          text: cryptoHoldings[
+                                                              index],
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 14.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                          children: <TextSpan>[
+                                                            TextSpan(
+                                                                text: ' BTC',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    fontSize:
+                                                                        8.0))
+                                                          ]),
+                                                    )),
+                                                Expanded(
+                                                  child: SizedBox(),
+                                                ),
+                                              ],
+                                            ),
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Date',
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 12.0),
+                                                  ),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Holdings',
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 12.0),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Price',
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 12.0),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              Container(
+                                                  height: 50.0,
+                                                  child: ListView.builder(
+                                                      itemCount: 2,
+                                                      scrollDirection:
+                                                          Axis.vertical,
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        return Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    left: 10.0,
+                                                                    right: 10.0,
+                                                                    bottom:
+                                                                        5.0),
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 10.0,
+                                                                    top: 8.0,
+                                                                    right: 10.0,
+                                                                    bottom:
+                                                                        8.0),
+                                                            decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .grey[800],
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10.0))),
+                                                            child: Row(
+                                                              children: <
+                                                                  Widget>[
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              10.0),
+                                                                  child: Text(
+                                                                    '02/11/22',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            14.0),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child:
+                                                                      SizedBox(),
+                                                                ),
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              10.0),
+                                                                  child: Text(
+                                                                    '0.00050BTC',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            14.0),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child:
+                                                                      SizedBox(),
+                                                                ),
+                                                                Text(
+                                                                  '\$10.00',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          14.0),
+                                                                ),
+                                                              ],
+                                                            ));
+                                                      }))
+                                            ],
+                                          ))
+                                    ],
+                                  );
+                                },
+                              ))
                             ],
                           ),
                         );
