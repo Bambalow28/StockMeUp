@@ -35,10 +35,12 @@ class _postSignal extends State<postSignal> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   var userId;
   var displayName;
+  var userPic;
 
   int signalNum = 0;
   List tickerInfo = [];
 
+  //Get Signal Data
   signalData() async {
     var getPosts = await firestoreInstance.collection('posts').get();
 
@@ -52,12 +54,23 @@ class _postSignal extends State<postSignal> {
     });
   }
 
+  //Get User Profile Picture
+  getProfileData() async {
+    var getUserData =
+        await firestoreInstance.collection("users").doc(userId).get();
+
+    setState(() {
+      userPic = getUserData.data()!['profilePicture'];
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     User user = auth.currentUser!;
     userId = user.uid;
     displayName = user.displayName;
+    getProfileData();
     signalData();
   }
 
@@ -323,6 +336,11 @@ class _postSignal extends State<postSignal> {
 
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
+                                                      backgroundColor:
+                                                          Colors.red[300],
+                                                      elevation: 5.0,
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
                                                       content: Text(
                                                           'Signal Deleted')));
                                             },
@@ -479,24 +497,27 @@ class _postSignal extends State<postSignal> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        DocumentReference makeDoc =
-                            firestoreInstance.collection("posts").doc();
-                        makeDoc.set({
-                          "tickerSymbol": tickerSymbol.text,
-                          "signalPost": signalPost.text,
-                          "signal": signal,
-                          "postStatus": postStatus,
-                          "timePosted": timeNow,
-                          "goodSignal": 0,
-                          "badSignal": 0,
-                          "postID": makeDoc.id,
-                          "user": displayName,
-                          "userID": userId
-                        }).then((value) => Timer(Duration(seconds: 1), () {
-                              setState(() {
-                                signalMessage = "Successfully Posted";
-                              });
-                            }));
+                        setState(() {
+                          DocumentReference makeDoc =
+                              firestoreInstance.collection("posts").doc();
+                          makeDoc.set({
+                            "tickerSymbol": tickerSymbol.text,
+                            "signalPost": signalPost.text,
+                            "signal": signal,
+                            "postStatus": postStatus,
+                            "timePosted": timeNow,
+                            "goodSignal": 0,
+                            "badSignal": 0,
+                            "postID": makeDoc.id,
+                            "user": displayName,
+                            "userProfilePic": userPic,
+                            "userID": userId
+                          }).then((value) => Timer(Duration(seconds: 1), () {
+                                setState(() {
+                                  signalMessage = "Successfully Posted";
+                                });
+                              }));
+                        });
                       },
                       child: Container(
                           margin: EdgeInsets.only(
