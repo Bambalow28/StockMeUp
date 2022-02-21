@@ -454,12 +454,12 @@ class _MainPage extends State<MainPage> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: Colors.grey[400],
-                                      // image: new DecorationImage(
-                                      //   fit: BoxFit.contain,
-                                      //   image: new NetworkImage(
-                                      //     profilePic,
-                                      //   ),
-                                      // ),
+                                      image: new DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: new NetworkImage(
+                                            signalInfo[index]
+                                                ['userProfilePic']),
+                                      ),
                                     ),
                                   ),
                                   Padding(
@@ -751,7 +751,7 @@ class _MainPage extends State<MainPage> {
                 text: 'STOCKME',
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     fontStyle: FontStyle.italic),
                 children: <TextSpan>[
                   TextSpan(
@@ -760,7 +760,7 @@ class _MainPage extends State<MainPage> {
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic,
-                        fontSize: 18.0),
+                        fontSize: 16.0),
                   )
                 ]),
           ),
@@ -986,14 +986,14 @@ class _MainPage extends State<MainPage> {
                                                           color: Colors.white,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 24.0),
+                                                          fontSize: 22.0),
                                                     )),
                                                 Expanded(
                                                   child: SizedBox(),
                                                 ),
                                                 Padding(
                                                     padding: EdgeInsets.only(
-                                                        top: 10.0, right: 20.0),
+                                                        top: 8.0, right: 20.0),
                                                     child: Text(
                                                       signalInfo[index]
                                                           ['signal'],
@@ -1008,7 +1008,7 @@ class _MainPage extends State<MainPage> {
                                                               : Colors.red[300],
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 20.0),
+                                                          fontSize: 16.0),
                                                     )),
                                               ],
                                             ),
@@ -1022,7 +1022,7 @@ class _MainPage extends State<MainPage> {
                                                           ['signalPost'],
                                                       style: TextStyle(
                                                           color: Colors.white,
-                                                          fontSize: 16.0),
+                                                          fontSize: 14.0),
                                                     )),
                                                 Expanded(
                                                   child: SizedBox(),
